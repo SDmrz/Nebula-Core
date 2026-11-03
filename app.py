@@ -91,6 +91,7 @@ class ChannelsCreate(BaseModel):
     names: str = Field(min_length=1)
     kind: Literal['text', 'voice', 'forum', 'news', 'category'] = 'text'
     category_id: str | None = None
+    new_category_name: str | None = Field(default=None, max_length=100)
 
 @app.post('/api/channels')
 async def create_channels(payload: ChannelsCreate):
@@ -98,13 +99,22 @@ async def create_channels(payload: ChannelsCreate):
     names = [n.strip() for n in payload.names.splitlines() if n.strip()]
     if not names or len(names) > 30:
         raise HTTPException(400, 'Entre 1 et 30 noms par opération')
+    if payload.new_category_name and payload.category_id:
+        raise HTTPException(400, 'Choisis une catégorie existante OU une nouvelle catégorie')
+    if payload.kind == 'category' and (payload.category_id or payload.new_category_name):
+        raise HTTPException(400, 'Une catégorie ne peut pas contenir de catégories')
+    if payload.kind == 'news' and 'COMMUNITY' not in g.features:
+        raise HTTPException(400, 'Les salons annonces nécessitent le mode Communauté')
     cat = None
+    if payload.new_category_name is not None:
+        new_name = payload.new_category_name.strip()
+        if not new_name:
+            raise HTTPException(400, 'Nom de nouvelle catégorie vide')
+        cat = await g.create_category(new_name, reason='Nebula Core V2.1 : création groupée')
     if payload.category_id:
         cat = g.get_channel(int(payload.category_id))
         if not isinstance(cat, discord.CategoryChannel):
             raise HTTPException(400, 'Catégorie invalide')
-    if payload.kind == 'news' and not 'COMMUNITY' in [f.name for f in g.features]:
-        raise HTTPException(400, 'Les salons annonces nécessitent le mode Communauté')
     results = []
     for name in names:
         if payload.kind == 'category':
@@ -116,7 +126,7 @@ async def create_channels(payload: ChannelsCreate):
         else:
             c = await g.create_text_channel(name, category=cat, news=(payload.kind == 'news'), reason='Nebula Core dashboard')
         results.append({'id': str(c.id), 'name': c.name})
-    return {'created': results}
+    return {'created': results, 'category_created': {'id': str(cat.id), 'name': cat.name} if payload.new_category_name and cat else None}
 
 # Explicit tri-state overwrite: allow, deny, inherit.
 class PermissionBatch(BaseModel):
@@ -180,10 +190,6 @@ async def backup():
         'roles': [{'id': str(r.id), 'name': r.name, 'color': str(r.color), 'permissions': r.permissions.value} for r in g.roles],
         'channels': [{'id': str(c.id), 'name': c.name, 'type': str(c.type), 'category_id': str(c.category_id) if getattr(c, 'category_id', None) else None, 'overwrites': {str(target.id): {'allow': allow.value, 'deny': deny.value} for target, (allow, deny) in c.overwrites.items()}} for c in g.channels]
     }
-
-if __name__ == '__main__':
-    import uvicorn
-    uvicorn.run(app, host='127.0.0.1', port=8765)
 
 # V2: maintenance endpoints
 class RoleUpdate(BaseModel):
@@ -259,3 +265,58 @@ async def permission_matrix(payload: PermissionMatrix):
             await c.set_permissions(r, overwrite=overwrite, reason='Nebula Core V2 matrice')
             updated += 1
     return {'updated': updated}
+
+# V2.1: suppressions groupées, avec contrôle serveur strict.
+class ChannelsDeleteBatch(BaseModel):
+    channel_ids: list[str] = Field(min_length=1, max_length=30)
+    confirmation: str
+
+@app.post('/api/channels/delete-batch')
+async def delete_channels_batch(payload: ChannelsDeleteBatch):
+    g = await guild()
+    ids = payload.channel_ids
+    if len(ids) != len(set(ids)):
+        raise HTTPException(400, 'La sélection contient des doublons')
+    if payload.confirmation != f'SUPPRIMER {len(ids)}':
+        raise HTTPException(400, 'Confirmation incorrecte')
+    channels = []
+    for cid in ids:
+        try:
+            c = g.get_channel(int(cid))
+        except ValueError:
+            raise HTTPException(400, 'Identifiant de salon invalide')
+        if c is None or isinstance(c, discord.CategoryChannel):
+            raise HTTPException(400, f'Salon invalide ou catégorie interdite : {cid}')
+        channels.append(c)
+    deleted, errors = [], []
+    for c in channels:
+        try:
+            await c.delete(reason='Nebula Core V2.1 : suppression groupée')
+            deleted.append({'id': str(c.id), 'name': c.name})
+        except discord.HTTPException as exc:
+            errors.append({'id': str(c.id), 'name': c.name, 'error': str(exc)})
+    return {'deleted': deleted, 'errors': errors}
+
+class CategoryDelete(BaseModel):
+    category_id: str
+    confirmation: str
+
+@app.post('/api/categories/delete-empty')
+async def delete_empty_category(payload: CategoryDelete):
+    g = await guild()
+    if payload.confirmation != 'SUPPRIMER':
+        raise HTTPException(400, 'Confirmation incorrecte')
+    try:
+        c = g.get_channel(int(payload.category_id))
+    except ValueError:
+        raise HTTPException(400, 'Identifiant de catégorie invalide')
+    if not isinstance(c, discord.CategoryChannel):
+        raise HTTPException(404, 'Catégorie introuvable')
+    if c.channels:
+        raise HTTPException(400, 'La catégorie doit être vide avant sa suppression')
+    await c.delete(reason='Nebula Core V2.1 : suppression catégorie vide')
+    return {'deleted': str(c.id)}
+
+if __name__ == '__main__':
+    import uvicorn
+    uvicorn.run(app, host='127.0.0.1', port=8765)
