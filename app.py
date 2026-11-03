@@ -1,5 +1,7 @@
 import asyncio
 import os
+import json
+from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Literal
@@ -58,6 +60,51 @@ async def forbidden_handler(request, exc):
 async def discord_handler(request, exc):
     from fastapi.responses import JSONResponse
     return JSONResponse(status_code=502, content={'detail': f'Erreur Discord : {exc.text}'})
+
+# Historique local sans token ni contenu des messages.
+LOG_PATH = Path(__file__).parent / 'data' / 'actions.jsonl'
+
+def audit(action: str, details: dict):
+    LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
+    entry = {'at': datetime.now(timezone.utc).isoformat(), 'action': action, 'details': details}
+    with LOG_PATH.open('a', encoding='utf-8') as handle:
+        handle.write(json.dumps(entry, ensure_ascii=False) + '\n')
+
+@app.get('/api/history')
+async def history():
+    if not LOG_PATH.exists():
+        return {'entries': []}
+    lines = LOG_PATH.read_text(encoding='utf-8').splitlines()[-100:]
+    return {'entries': [json.loads(line) for line in reversed(lines)]}
+
+class CategoryTemplate(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    text_channels: list[str] = Field(default_factory=list, max_length=20)
+    voice_channels: list[str] = Field(default_factory=list, max_length=10)
+
+@app.post('/api/categories/template')
+async def create_category_template(payload: CategoryTemplate):
+    g = await guild()
+    texts = [x.strip() for x in payload.text_channels]
+    voices = [x.strip() for x in payload.voice_channels]
+    if not texts and not voices:
+        raise HTTPException(400, 'Ajoute au moins un salon')
+    if any(not x or len(x)>100 for x in texts+voices):
+        raise HTTPException(400, 'Nom de salon invalide')
+    cat = await g.create_category(payload.name.strip(), reason='Nebula Core V2.2 modèle')
+    created = []
+    try:
+        for name in texts:
+            c = await g.create_text_channel(name, category=cat, reason='Nebula Core V2.2 modèle')
+            created.append({'id': str(c.id), 'name': c.name})
+        for name in voices:
+            c = await g.create_voice_channel(name, category=cat, reason='Nebula Core V2.2 modèle')
+            created.append({'id': str(c.id), 'name': c.name})
+    except discord.HTTPException as exc:
+        audit('template_partial', {'category': cat.name, 'created': created, 'error': str(exc)})
+        raise HTTPException(502, f'Création partielle : catégorie {cat.name}, {len(created)} salons créés. {exc}')
+    audit('template_created', {'category': cat.name, 'channels': created})
+    return {'category': {'id': str(cat.id), 'name': cat.name}, 'created': created}
 
 @app.get('/')
 async def index():
@@ -126,6 +173,7 @@ async def create_channels(payload: ChannelsCreate):
         else:
             c = await g.create_text_channel(name, category=cat, news=(payload.kind == 'news'), reason='Nebula Core dashboard')
         results.append({'id': str(c.id), 'name': c.name})
+    audit('channels_created', {'names': [x['name'] for x in results], 'kind': payload.kind})
     return {'created': results, 'category_created': {'id': str(cat.id), 'name': cat.name} if payload.new_category_name and cat else None}
 
 # Explicit tri-state overwrite: allow, deny, inherit.
@@ -216,6 +264,7 @@ async def update_role(payload: RoleUpdate):
     if payload.mentionable is not None: changes['mentionable'] = payload.mentionable
     if not changes: raise HTTPException(400, 'Aucun changement')
     await r.edit(**changes, reason='Nebula Core V2')
+    audit('role_updated', {'role': r.name, 'changes': list(changes)})
     return {'updated': str(r.id)}
 
 class DeleteItem(BaseModel):
@@ -229,6 +278,7 @@ async def delete_role(payload: DeleteItem):
     if payload.confirmation != 'SUPPRIMER' or not r or r.is_default() or r.managed:
         raise HTTPException(400, 'Suppression non autorisée')
     await r.delete(reason='Nebula Core V2')
+    audit('item_deleted', {'id': payload.id})
     return {'deleted': payload.id}
 
 @app.post('/api/channels/delete')
@@ -238,6 +288,7 @@ async def delete_channel(payload: DeleteItem):
     if payload.confirmation != 'SUPPRIMER' or not c:
         raise HTTPException(400, 'Suppression non autorisée')
     await c.delete(reason='Nebula Core V2')
+    audit('item_deleted', {'id': payload.id})
     return {'deleted': payload.id}
 
 class PermissionMatrix(BaseModel):
@@ -264,6 +315,7 @@ async def permission_matrix(payload: PermissionMatrix):
                 setattr(overwrite, permission, {'allow': True, 'deny': False, 'inherit': None}[value])
             await c.set_permissions(r, overwrite=overwrite, reason='Nebula Core V2 matrice')
             updated += 1
+    audit('permissions_updated', {'roles': len(roles), 'channels': len(channels), 'permissions': payload.permissions})
     return {'updated': updated}
 
 # V2.1: suppressions groupées, avec contrôle serveur strict.
@@ -295,6 +347,7 @@ async def delete_channels_batch(payload: ChannelsDeleteBatch):
             deleted.append({'id': str(c.id), 'name': c.name})
         except discord.HTTPException as exc:
             errors.append({'id': str(c.id), 'name': c.name, 'error': str(exc)})
+    audit('channels_deleted_batch', {'deleted': deleted, 'errors': errors})
     return {'deleted': deleted, 'errors': errors}
 
 class CategoryDelete(BaseModel):
@@ -315,6 +368,7 @@ async def delete_empty_category(payload: CategoryDelete):
     if c.channels:
         raise HTTPException(400, 'La catégorie doit être vide avant sa suppression')
     await c.delete(reason='Nebula Core V2.1 : suppression catégorie vide')
+    audit('category_deleted', {'name': c.name})
     return {'deleted': str(c.id)}
 
 if __name__ == '__main__':
