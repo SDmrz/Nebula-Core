@@ -152,6 +152,34 @@ button{letter-spacing:.01em}
 .quick-tools{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .quick-tools .secondary{padding:9px 12px}
 @media(max-width:900px){.sidebar{position:relative;height:auto}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap}}
+
+/* V2.6 — navigation independently scrollable and human-readable audit */
+@media(min-width:901px){
+ .sidebar{height:100dvh;min-height:0;overflow:hidden;gap:0;padding-bottom:12px}
+ .sidebar .brand{flex:0 0 auto;margin-bottom:16px}
+ .sidebar .nav{display:flex;flex-direction:column;flex:1 1 auto;min-height:0;overflow-y:auto;overflow-x:hidden;padding:4px 6px 12px 2px;scrollbar-width:thin;scrollbar-color:#37637c transparent;overscroll-behavior:contain}
+ .sidebar .nav button{flex:0 0 auto;width:100%}
+ .sidebar .foot{flex:0 0 auto;margin-top:10px;padding:13px 12px 3px;background:rgba(10,17,31,.9)}
+}
+.history-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:17px 0}
+.history-toolbar input,.history-toolbar select{max-width:310px;min-width:170px}
+.history-stack{display:grid;gap:12px;max-height:620px;overflow:auto;padding:3px 8px 4px 2px;scrollbar-width:thin;scrollbar-color:#37637c transparent}
+.history-card{display:flex;gap:15px;align-items:flex-start;background:rgba(7,17,32,.65);border:1px solid rgba(145,188,225,.14);border-radius:15px;padding:17px;transition:background .18s,border-color .18s}
+.history-card:hover{background:rgba(23,46,70,.65);border-color:rgba(105,207,241,.27)}
+.history-icon{display:grid;place-items:center;flex:0 0 39px;width:39px;height:39px;border-radius:12px;background:rgba(75,190,227,.11);color:#7fe6ff;font-size:19px}
+.history-card[data-tone=warn] .history-icon{background:rgba(244,177,91,.12);color:#ffd39c}
+.history-card[data-tone=bad] .history-icon{background:rgba(232,102,135,.12);color:#ffb2c6}
+.history-body{flex:1;min-width:0}
+.history-title{font-size:14px;font-weight:700;color:#edf8ff;line-height:1.45}
+.history-meta{display:flex;flex-wrap:wrap;align-items:center;gap:9px;margin:7px 0;color:#91afc5;font-size:12px}
+.history-summary{color:#c1d6e5;line-height:1.65;overflow-wrap:anywhere}
+.history-details{margin-top:12px;border-top:1px solid rgba(145,188,225,.12);padding-top:11px}
+.history-details summary{cursor:pointer;color:#79dcf6;font-size:12px;font-weight:600;user-select:none}
+.history-details pre{white-space:pre-wrap;overflow-wrap:anywhere;font:12px/1.6 Consolas,monospace;color:#b1c6d8;margin:11px 0 0;padding:12px;background:#081526;border-radius:9px}
+.history-pill{border-radius:30px;padding:3px 9px;background:rgba(75,200,170,.12);color:#8aebcd;font-weight:700}
+.history-pill.warn{background:rgba(235,175,93,.13);color:#ffd39c}
+.history-pill.bad{background:rgba(232,102,135,.13);color:#ffb2c6}
+@media(max-width:900px){.history-toolbar input,.history-toolbar select{max-width:none;flex:1}.history-card{padding:13px}.history-stack{max-height:none}}
 </style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / AURORA</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="separators">◈ &nbsp;Séparateurs auto</button><button data-view="presets">✦ &nbsp;Atelier de rôles</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="rules">📜 &nbsp;Règlement</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary small" id="openCommands" onclick="openCommands()" title="Navigation rapide Ctrl+K">⌕ Rechercher <span style="opacity:.55">Ctrl K</span></button><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
 <section id="overview" class="view active"><p class="muted">Pilote ton serveur depuis une interface locale, sans jongler entre les menus Discord.</p><div class="metrics"><div class="metric"><span>Rôles</span><strong id="roleCount">—</strong></div><div class="metric"><span>Salons</span><strong id="channelCount">—</strong></div><div class="metric"><span>Catégories</span><strong id="categoryCount">—</strong></div></div><div class="panel"><h2>Actions rapides</h2><div class="actions"><button class="secondary" data-go="channels">＋ Créer des salons</button><button class="secondary" data-go="roles">◇ Gérer les rôles</button><button class="secondary" data-go="permissions">▣ Modifier les accès</button><button class="secondary" data-go="backup">↓ Exporter la configuration</button></div></div><div class="panel"><h2>Conseil de maintenance</h2><p class="muted">Exporte une sauvegarde JSON avant une modification importante. L'export n'est pas une restauration automatique. Les suppressions sont définitives.</p></div></section>
 <section id="channels" class="view"><div class="grid"><div class="panel"><h2>＋ Création en masse</h2><div class="field"><label>Noms — un par ligne (30 max)</label><textarea id="names" placeholder="💬・discussion&#10;🎮・gaming&#10;📢・annonces"></textarea></div><div class="field"><label>Type</label><select id="kind"><option value="text">Texte</option><option value="voice">Vocal</option><option value="forum">Forum</option><option value="news">Annonces communautaires</option><option value="category">Catégorie</option></select></div><div class="field"><label>Catégorie parente existante</label><select id="createCategory"></select></div>
@@ -176,7 +204,7 @@ button{letter-spacing:.01em}
 </div>
 <div class="panel"><h2>Prévisualisation</h2><div id="rulesPreview" style="white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;padding:18px;border-radius:14px;background:rgba(5,14,27,.45);border:1px solid rgba(145,188,225,.12);min-height:250px"></div><p class="hint" id="rulesMessageInfo">Aucun message publié par cet outil.</p></div>
 </div></section>
-<section id="history" class="view"><div class="panel"><div class="sectionhead"><h2>Historique des actions locales</h2><button class="secondary small" id="historyRefresh">↻ Actualiser</button></div><p class="hint">100 dernières opérations enregistrées localement dans data/actions.jsonl. Ce journal ne remplace pas les logs d'audit Discord.</p><div id="historyList" class="list"></div></div></section>
+<section id="history" class="view"><div class="panel"><div class="sectionhead"><h2>Historique des actions locales</h2><button class="secondary small" id="historyRefresh">↻ Actualiser</button></div><p class="hint">Les 100 dernières opérations effectuées depuis NEBULA CORE, présentées en langage clair. Journal stocké localement sur ce PC.</p><div class="history-toolbar"><input id="historySearch" type="search" placeholder="Rechercher une action, un salon, un rôle…" aria-label="Rechercher dans l’historique"><select id="historyFilter" aria-label="Filtrer les actions"><option value="all">Toutes les actions</option><option value="roles">Rôles et séparateurs</option><option value="channels">Salons et catégories</option><option value="rules">Règlement</option><option value="other">Autres</option></select></div><div id="historyCount" class="hint" style="margin:0 0 12px"></div><div id="historyList" class="history-stack" aria-live="polite"></div></div></section>
 <div class="panel" id="templatePanel" style="display:none"></div>
 <section id="separators" class="view">
 <div class="sectionhead"><h2>◈ Synchronisation des séparateurs</h2><span class="tag">Exécution manuelle</span></div>
@@ -224,7 +252,7 @@ const permissionLabels={view_channel:'Voir le salon',send_messages:'Envoyer des 
 function toast(message,error=false){let e=$('toast');e.textContent=message;e.className='toast'+(error?' error':'');e.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.style.display='none',6500)}
 async function api(path,method='GET',data){let response=await fetch(path,{method,headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});let j=await response.json();if(!response.ok)throw Error(typeof j.detail==='string'?j.detail:JSON.stringify(j.detail||j));return j}
 async function execute(fn){if(busy)return;busy=true;try{let result=await fn();if(result!==false)await refresh()}catch(e){toast(e.message,true)}finally{busy=false}}
-function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',presets:'Atelier de rôles',separators:'Séparateurs automatiques',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement'}[id]}
+function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',presets:'Atelier de rôles',separators:'Séparateurs automatiques',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement',history:'Historique'}[id]}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.view));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function selectOptions(id,items,empty=false){let el=$(id),selected=el.value;el.replaceChildren();if(empty)el.add(new Option('Aucune catégorie',''));items.forEach(x=>el.add(new Option(x.name,String(x.id))));if([...el.options].some(o=>o.value===selected))el.value=selected}
 function checkboxList(id,items,checkedSet=new Set()){let parent=$(id);parent.replaceChildren();if(!items.length){let e=document.createElement('div');e.className='empty';e.textContent='Aucun résultat';parent.append(e);return}items.forEach(x=>{let row=document.createElement('div');row.className='item';let label=document.createElement('label'),check=document.createElement('input'),name=document.createElement('span');check.type='checkbox';check.value=String(x.id);check.checked=checkedSet.has(String(x.id));name.textContent=x.name;label.append(check,name);row.append(label);if(x.type){let tag=document.createElement('span');tag.className='tag';tag.textContent=x.type;row.append(tag)}parent.append(row)})}
@@ -295,7 +323,53 @@ $('templateCreate').onclick=()=>execute(async()=>{
  if(!confirm(`Créer « ${name} » avec ${text_channels.length} salon(s) texte et ${voice_channels.length} salon(s) vocaux ?`))return false;
  const r=await api('/api/categories/template','POST',{name,text_channels,voice_channels});toast(`Catégorie créée avec ${r.created.length} salon(s)`);
 });
-async function loadHistory(){try{const r=await api('/api/history'),box=$('historyList');box.replaceChildren();if(!r.entries.length){box.textContent='Aucune action enregistrée pour le moment.';return}r.entries.forEach(entry=>{const row=document.createElement('div');row.className='item';row.style.alignItems='flex-start';const label=document.createElement('span');label.style.whiteSpace='normal';label.textContent=new Date(entry.at).toLocaleString('fr-FR')+' · '+entry.action+' · '+JSON.stringify(entry.details);row.append(label);box.append(row)})}catch(e){toast(e.message,true)}}
+const historyActions={
+ separator_sync:['Synchronisation des séparateurs','◈','roles'],role_presets_created:['Création de rôles en masse','✦','roles'],role_presets_partial:['Création partielle de rôles','✦','roles'],role_updated:['Modification d’un rôle','◇','roles'],
+ channels_created:['Création de salons','＋','channels'],channels_deleted_batch:['Suppression de salons en masse','−','channels'],category_deleted:['Suppression d’une catégorie','−','channels'],template_created:['Création d’un modèle de catégorie','▦','channels'],template_partial:['Création partielle de catégorie','▦','channels'],item_deleted:['Suppression d’un élément','−','channels'],
+ permissions_updated:['Modification de permissions en masse','▣','roles'],rules_draft_saved:['Brouillon du règlement enregistré','▤','rules'],rules_published:['Règlement publié sur Discord','📜','rules']
+};
+let historyEntries=[];
+function historyNumber(v){return Number.isFinite(Number(v))?Number(v):0}
+function historySummary(e){
+ const d=e.details||{},count=x=>Array.isArray(x)?x.length:historyNumber(x);
+ switch(e.action){
+ case 'separator_sync':return `${historyNumber(d.total)} membre(s) analysé(s) · ${historyNumber(d.updated)} membre(s) modifié(s) · ${historyNumber(d.added)} rôle(s) attribué(s) · ${historyNumber(d.errors)} erreur(s)`;
+ case 'role_presets_created':case 'role_presets_partial':return `${count(d.created)} rôle(s) créé(s) · ${count(d.skipped)} ignoré(s)${Array.isArray(d.created)&&d.created.length?' · '+d.created.slice(0,3).map(x=>x.name||x).join(', '):''}`;
+ case 'channels_deleted_batch':return `${count(d.deleted)} salon(s) supprimé(s) · ${count(d.errors)} erreur(s)${Array.isArray(d.deleted)&&d.deleted.length?' · '+d.deleted.slice(0,3).map(x=>x.name||x).join(', '):''}`;
+ case 'channels_created':return `${count(d.names)} salon(s) créé(s)${Array.isArray(d.names)&&d.names.length?' · '+d.names.slice(0,4).join(', '):''}`;
+ case 'role_updated':return `Rôle : ${d.role||'non précisé'} · ${count(d.changes)} propriété(s) modifiée(s)`;
+ case 'permissions_updated':return `${historyNumber(d.roles)} rôle(s) et ${historyNumber(d.channels)} salon(s) concernés`;
+ case 'rules_published':return d.edited?'Message du règlement existant mis à jour':'Nouveau message de règlement envoyé';
+ case 'rules_draft_saved':return `Brouillon enregistré (${historyNumber(d.length)} caractères)`;
+ case 'template_created':case 'template_partial':return `Catégorie : ${d.category||'non précisée'} · ${count(d.channels||d.created)} salon(s) créé(s)`;
+ case 'category_deleted':return `Catégorie supprimée : ${d.name||'non précisée'}`;
+ case 'item_deleted':return `Élément supprimé · Identifiant : ${d.id||'inconnu'}`;
+ default:return Object.entries(d).slice(0,3).map(([k,v])=>`${k} : ${Array.isArray(v)?v.length+' élément(s)':typeof v==='object'?'détails disponibles':String(v)}`).join(' · ')||'Action enregistrée';
+ }
+}
+function historyStatus(e){const d=e.details||{};if(d.status==='failed'||d.status==='error')return ['Échec','bad'];if(d.status==='partial'||e.action.endsWith('_partial')||historyNumber(d.errors)>0||(Array.isArray(d.errors)&&d.errors.length))return ['Partiel','warn'];return ['Terminé','ok']}
+function renderHistory(){
+ const box=$('historyList'),q=$('historySearch').value.trim().toLocaleLowerCase('fr'),filter=$('historyFilter').value;
+ const list=historyEntries.filter(e=>{const category=(historyActions[e.action]||['','','other'])[2];return(filter==='all'||filter===category)&&(!q||(`${(historyActions[e.action]||[e.action])[0]} ${historySummary(e)} ${JSON.stringify(e.details||{})}`).toLocaleLowerCase('fr').includes(q))});
+ box.replaceChildren();$('historyCount').textContent=`${list.length} action(s) affichée(s) sur ${historyEntries.length} enregistrée(s)`;
+ if(!list.length){const empty=document.createElement('div');empty.className='empty';empty.textContent='Aucune action ne correspond à ta recherche.';box.append(empty);return}
+ list.forEach(e=>{
+ const [title,icon]=historyActions[e.action]||[e.action.replaceAll('_',' '),'◷'];const [status,tone]=historyStatus(e);
+ const card=document.createElement('article');card.className='history-card';card.dataset.tone=tone;
+ const symbol=document.createElement('div');symbol.className='history-icon';symbol.textContent=icon;
+ const body=document.createElement('div');body.className='history-body';
+ const heading=document.createElement('div');heading.className='history-title';heading.textContent=title;
+ const meta=document.createElement('div');meta.className='history-meta';
+ const date=document.createElement('time');const dt=new Date(e.at);date.textContent=Number.isNaN(dt.getTime())?'Date inconnue':dt.toLocaleString('fr-FR',{dateStyle:'medium',timeStyle:'short'});meta.append(date);
+ const pill=document.createElement('span');pill.className='history-pill '+(tone==='ok'?'':tone);pill.textContent=status;meta.append(pill);
+ const summary=document.createElement('div');summary.className='history-summary';summary.textContent=historySummary(e);
+ const details=document.createElement('details');details.className='history-details';const toggle=document.createElement('summary');toggle.textContent='Voir les détails techniques';const pre=document.createElement('pre');pre.textContent=JSON.stringify(e.details||{},null,2);details.append(toggle,pre);
+ body.append(heading,meta,summary,details);card.append(symbol,body);box.append(card);
+ });
+}
+async function loadHistory(){try{const r=await api('/api/history');historyEntries=Array.isArray(r.entries)?r.entries:[];renderHistory()}catch(e){toast(e.message,true)}}
+$('historySearch').addEventListener('input',renderHistory);
+$('historyFilter').addEventListener('change',renderHistory);
 $('historyRefresh').onclick=loadHistory;
 document.querySelector('[data-view="history"]').addEventListener('click',loadHistory);
 refresh();
