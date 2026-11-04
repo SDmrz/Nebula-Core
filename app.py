@@ -371,6 +371,80 @@ async def delete_empty_category(payload: CategoryDelete):
     audit('category_deleted', {'name': c.name})
     return {'deleted': str(c.id)}
 
+
+# Règlement : brouillon et référence au message persistés localement.
+RULES_PATH = Path(__file__).parent / 'data' / 'rules.json'
+DEFAULT_RULES = "# 📜 RÈGLEMENT — NEBULA\n\nBienvenue sur NEBULA ! Pour garder une communauté agréable, merci de respecter ces règles.\n\n**01 · Respect avant tout**\nAucune insulte ciblée, discrimination, menace, intimidation ou harcèlement. Les désaccords sont permis, les attaques personnelles non.\n\n**02 · Pas de spam ni de publicité sauvage**\nÉvite le flood, les mentions abusives, les liens répétitifs et la promotion sans accord du staff.\n\n**03 · Contenus appropriés**\nPas de contenu pornographique, choquant, illégal ou dangereux. Respecte aussi les règles et conditions de Discord.\n\n**04 · Respect de la vie privée**\nNe partage jamais d'informations personnelles, de conversations privées ou d'images d'autrui sans autorisation.\n\n**05 · Salons et vocaux**\nUtilise les salons selon leur thème. En vocal, laisse chacun s'exprimer et évite les nuisances volontaires.\n\n**06 · Pseudos et profils**\nChoisis un pseudo et un avatar appropriés. L'usurpation d'identité est interdite.\n\n**07 · Modération**\nRespecte les consignes du staff. En cas de problème, contacte la modération calmement plutôt que d'alimenter un conflit.\n\n**08 · Bon sens**\nAucune règle ne remplace le respect et la bienveillance. Le staff peut intervenir face à un comportement nuisible non listé ici.\n\n**En restant sur NEBULA, tu acceptes ce règlement.** ✨"
+
+def load_rules():
+    if RULES_PATH.exists():
+        try:
+            value = json.loads(RULES_PATH.read_text(encoding='utf-8'))
+            if isinstance(value, dict):
+                return {'content': value.get('content', DEFAULT_RULES),
+                        'channel_id': value.get('channel_id'),
+                        'message_id': value.get('message_id')}
+        except (OSError, ValueError):
+            pass
+    return {'content': DEFAULT_RULES, 'channel_id': None, 'message_id': None}
+
+def save_rules(value):
+    RULES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    temporary = RULES_PATH.with_suffix('.tmp')
+    temporary.write_text(json.dumps(value, ensure_ascii=False, indent=2), encoding='utf-8')
+    temporary.replace(RULES_PATH)
+
+class RulesDraft(BaseModel):
+    content: str = Field(min_length=1, max_length=2000)
+
+class RulesPublish(BaseModel):
+    content: str = Field(min_length=1, max_length=2000)
+    channel_id: str
+
+@app.get('/api/rules')
+async def get_rules():
+    await guild()
+    value = load_rules()
+    return {**value, 'max_length': 2000}
+
+@app.put('/api/rules')
+async def put_rules(payload: RulesDraft):
+    await guild()
+    value = load_rules()
+    value['content'] = payload.content
+    save_rules(value)
+    audit('rules_draft_saved', {'length': len(payload.content)})
+    return {'saved': True}
+
+@app.post('/api/rules/publish')
+async def publish_rules(payload: RulesPublish):
+    g = await guild()
+    try:
+        channel_id = int(payload.channel_id)
+    except ValueError:
+        raise HTTPException(400, 'Identifiant de salon invalide')
+    channel = g.get_channel(channel_id)
+    if not isinstance(channel, discord.TextChannel):
+        raise HTTPException(400, 'Choisis un salon textuel classique ou un salon d’annonces')
+    value = load_rules()
+    # Ne jamais modifier un message qui n'appartient pas au bot.
+    edited = False
+    if value.get('message_id') and str(value.get('channel_id')) == str(channel_id):
+        try:
+            msg = await channel.fetch_message(int(value['message_id']))
+            if msg.author.id != bot.user.id:
+                raise HTTPException(409, 'Le message enregistré n’appartient pas à Nebula Core')
+            await msg.edit(content=payload.content, allowed_mentions=discord.AllowedMentions.none())
+            edited = True
+        except discord.NotFound:
+            edited = False
+    if not edited:
+        msg = await channel.send(payload.content, allowed_mentions=discord.AllowedMentions.none())
+    value.update({'content': payload.content, 'channel_id': str(channel.id), 'message_id': str(msg.id)})
+    save_rules(value)
+    audit('rules_published', {'channel_id': str(channel.id), 'message_id': str(msg.id), 'edited': edited})
+    return {'published': True, 'edited': edited, 'channel_id': str(channel.id), 'message_id': str(msg.id)}
+
 if __name__ == '__main__':
     import uvicorn
     uvicorn.run(app, host='127.0.0.1', port=8765)

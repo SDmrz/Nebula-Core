@@ -1,6 +1,135 @@
-<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEBULA CORE — V2.2</title><style>
+<!doctype html><html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEBULA CORE — Aurora UI</title><style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 :root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#e5f4ff;background:#07111f;font-size:14px}*{box-sizing:border-box}body{margin:0}button,input,select,textarea{font:inherit}button{cursor:pointer}button:disabled{opacity:.45;cursor:not-allowed}.app{display:grid;grid-template-columns:250px minmax(0,1fr);min-height:100vh}.sidebar{background:#0b1c2e;border-right:1px solid #20415a;padding:24px 15px;display:flex;flex-direction:column;gap:22px}.brand{padding:7px 12px 22px;border-bottom:1px solid #20415a}.brand strong{color:#52e4ff;font-size:19px;letter-spacing:2px}.brand small{display:block;color:#759db7;letter-spacing:2px;margin-top:7px}.nav{display:grid;gap:7px}.nav button{border:0;background:none;color:#a2bed2;text-align:left;padding:13px 15px;border-radius:10px}.nav button:hover,.nav button.active{background:#163c54;color:#62e8ff}.foot{margin-top:auto;color:#7199b1;font-size:12px;padding:12px;line-height:1.7}.main{min-width:0;padding:28px 36px 70px;max-width:1550px;width:100%;margin:auto}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:32px}.eyebrow{color:#58dcf7;text-transform:uppercase;letter-spacing:2px;font-size:11px}.top h1{font-size:28px;margin:8px 0 0}.connection{border:1px solid #28657b;border-radius:30px;padding:10px 15px;color:#62e8ff;background:#10293b}.view{display:none}.view.active{display:block}.muted{color:#92adc1}.metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin:23px 0}.metric,.panel{background:#10253a;border:1px solid #22475f;border-radius:15px;padding:22px}.metric span{display:block;color:#9cb9cc}.metric strong{display:block;color:#52e3ff;font-size:36px;margin-top:10px}.panel{margin-bottom:18px}.panel h2{font-size:17px;margin:0 0 14px}.sectionhead{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px}.sectionhead h2{font-size:20px;margin:0}.grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.field{margin:14px 0}.field label{display:block;color:#9fbcd0;margin-bottom:7px;font-size:12px}input,select,textarea{width:100%;border:1px solid #31536a;border-radius:9px;padding:11px 12px;background:#091b2d;color:#e6f6ff;outline:none}input:focus,select:focus,textarea:focus{border-color:#34d7f3}input[type=color]{height:43px;padding:5px}input[type=checkbox]{width:auto;accent-color:#17d4f1}textarea{min-height:118px;resize:vertical}button.primary{border:0;border-radius:9px;background:#31d8f1;color:#062031;font-weight:700;padding:11px 17px}button.secondary{border:1px solid #397087;background:#17384c;color:#b2f4ff;border-radius:9px;padding:10px 14px}button.danger{border:1px solid #a14a63;background:#492338;color:#ffd3de;border-radius:9px;padding:10px 14px}button.small{padding:6px 10px;font-size:12px}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.list{max-height:420px;overflow:auto;border:1px solid #274b61;border-radius:10px}.item{padding:11px 13px;border-bottom:1px solid #203e51;display:flex;align-items:center;justify-content:space-between;gap:12px}.item:last-child{border-bottom:0}.item:hover{background:#163349}.item label{display:flex;align-items:center;gap:10px;cursor:pointer;min-width:0}.item span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tag{font-size:11px;color:#8fb8ce;border:1px solid #31536a;border-radius:20px;padding:3px 8px;white-space:nowrap}.swatch{width:12px;height:12px;border-radius:50%;display:inline-block;flex-shrink:0}.hint{font-size:12px;color:#8aafc6;line-height:1.6}.summary{background:#0b1d30;border:1px solid #25506b;border-radius:10px;padding:14px;color:#b8d5e5;margin:14px 0}.permission-row{display:grid;grid-template-columns:1fr 145px;gap:12px;align-items:center;margin:9px 0}.permission-row select{padding:7px}.toast{position:fixed;bottom:22px;right:22px;background:#143c51;border:1px solid #2a91ac;border-radius:12px;padding:15px 20px;max-width:450px;z-index:5;box-shadow:0 14px 45px #0008;display:none;white-space:pre-wrap}.toast.error{border-color:#db6882}.empty{padding:24px;text-align:center;color:#8cabc0}.search{max-width:300px}.warning{color:#ffb6c8}.dot{display:inline-block;width:8px;height:8px;background:#48e4c5;border-radius:50%;margin-right:7px}@media(max-width:900px){.app{grid-template-columns:1fr}.sidebar{padding:12px}.brand{padding:6px}.nav{display:flex;overflow:auto}.nav button{white-space:nowrap}.foot{display:none}.main{padding:20px}.grid,.metrics{grid-template-columns:1fr}.top{align-items:start;flex-direction:column}.permission-row{grid-template-columns:1fr 110px}}
-.bulk-check{width:17px;height:17px;flex-shrink:0;accent-color:#31d8f1}.channel-info{flex:1;min-width:0}.channel-info small{display:block;color:#86abc0;margin-top:3px}.item.selected{border-color:#2ccbe6;background:#12354b}#categoryList .item{gap:12px}</style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / V2.2</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
+.bulk-check{width:17px;height:17px;flex-shrink:0;accent-color:#31d8f1}.channel-info{flex:1;min-width:0}.channel-info small{display:block;color:#86abc0;margin-top:3px}.item.selected{border-color:#2ccbe6;background:#12354b}#categoryList .item{gap:12px}
+
+/* NEBULA CORE — AURORA UI / visual refresh (no API changes) */
+:root{
+  color-scheme:dark;
+  font-family:'DM Sans',Inter,'Segoe UI',sans-serif;
+  --bg:#070c17;--surface:#111c2e;--surface2:#152338;
+  --line:rgba(145,188,225,.12);--muted:#90a8bf;
+  --cyan:#6ae8ff;--violet:#a6a2ff;
+  background:var(--bg);color:#e9f3ff;
+}
+html{scroll-behavior:smooth}
+body{background:radial-gradient(ellipse 48% 32% at 88% 3%,rgba(63,108,215,.17),transparent 78%),
+radial-gradient(ellipse 45% 36% at 22% 95%,rgba(15,181,204,.075),transparent 75%),#070c17;
+min-height:100vh}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+background-image:linear-gradient(rgba(160,201,245,.018) 1px,transparent 1px),
+linear-gradient(90deg,rgba(160,201,245,.018) 1px,transparent 1px);
+background-size:52px 52px;mask-image:linear-gradient(to bottom,#000,transparent 90%)}
+.app{position:relative;z-index:1;grid-template-columns:268px minmax(0,1fr)}
+.sidebar{position:sticky;top:0;height:100vh;background:rgba(10,17,31,.88);
+border-right:1px solid var(--line);padding:29px 17px;gap:28px;
+box-shadow:15px 0 50px rgba(0,0,0,.12);backdrop-filter:blur(18px)}
+.brand{position:relative;padding:11px 13px 26px;border-bottom:1px solid var(--line)}
+.brand::before{content:"";display:block;width:34px;height:34px;border-radius:12px;margin-bottom:15px;
+background:linear-gradient(135deg,#7cefff,#618aff 58%,#9b7eff);
+box-shadow:0 0 25px rgba(91,180,255,.28),inset 0 0 0 7px rgba(255,255,255,.1);
+transform:rotate(-8deg)}
+.brand strong{font-family:'Space Grotesk','Segoe UI',sans-serif;font-size:19px;letter-spacing:.5px;
+color:#effaff;font-weight:700}
+.brand small{font-size:10px;letter-spacing:2.3px;color:#7797b3;margin-top:9px}
+.nav{gap:6px}
+.nav button{position:relative;padding:14px 16px;border:1px solid transparent;border-radius:12px;
+font-weight:600;color:#91a8bf;transition:background .2s,border-color .2s,color .2s,transform .2s,box-shadow .2s}
+.nav button:hover{background:rgba(94,156,218,.10);color:#e9f7ff;transform:translateX(3px)}
+.nav button.active{background:linear-gradient(95deg,rgba(51,202,233,.18),rgba(87,114,236,.11));
+color:#8cefff;border-color:rgba(99,221,250,.18);box-shadow:inset 3px 0 0 #60e4ff,0 8px 24px rgba(0,0,0,.1)}
+.foot{padding:18px 13px;border-top:1px solid var(--line);line-height:1.9;color:#728ca7}
+.main{max-width:1600px;padding:42px clamp(20px,4vw,66px) 90px}
+.top{padding-bottom:24px;margin-bottom:25px;border-bottom:1px solid var(--line)}
+.eyebrow{color:#74dfff;font-size:11px;letter-spacing:2.5px;font-weight:700}
+.top h1{font-family:'Space Grotesk','Segoe UI',sans-serif;font-size:clamp(27px,3vw,38px);
+font-weight:700;letter-spacing:-1.1px;margin-top:9px}
+.connection{background:rgba(15,51,66,.66);border:1px solid rgba(99,230,241,.22);
+box-shadow:0 0 0 4px rgba(50,210,226,.035);font-weight:600;font-size:12px;padding:11px 16px}
+.dot{box-shadow:0 0 0 4px rgba(72,228,197,.1),0 0 15px rgba(72,228,197,.45)}
+.view.active{animation:pageIn .35s ease both}
+@keyframes pageIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.muted{color:var(--muted);line-height:1.7}
+.metrics{gap:18px;margin:27px 0}
+.metric,.panel{position:relative;overflow:hidden;background:linear-gradient(145deg,rgba(22,36,58,.97),rgba(13,24,41,.96));
+border:1px solid var(--line);border-radius:19px;box-shadow:0 12px 38px rgba(0,0,0,.16),inset 0 1px 0 rgba(255,255,255,.035)}
+.metric{min-height:154px;padding:25px 26px;transition:transform .22s,box-shadow .22s,border-color .22s}
+.metric::before{content:"";position:absolute;right:-38px;top:-46px;width:145px;height:145px;border-radius:50%;
+background:radial-gradient(circle,rgba(89,195,251,.13),transparent 70%);pointer-events:none}
+.metric:nth-child(2)::before{background:radial-gradient(circle,rgba(160,130,255,.15),transparent 70%)}
+.metric:nth-child(3)::before{background:radial-gradient(circle,rgba(55,223,189,.14),transparent 70%)}
+.metric:hover{transform:translateY(-4px);border-color:rgba(106,232,255,.26);box-shadow:0 20px 48px rgba(0,0,0,.27)}
+.metric span{font-weight:600;color:#a7bbce}
+.metric strong{font-family:'Space Grotesk',sans-serif;font-size:42px;letter-spacing:-1.5px;
+background:linear-gradient(100deg,#a3f5ff,#6cbaff);background-clip:text;-webkit-background-clip:text;color:transparent}
+.panel{padding:26px;margin-bottom:20px}
+.panel h2,.sectionhead h2{font-family:'Space Grotesk',sans-serif;font-weight:600;letter-spacing:-.35px}
+.panel h2{font-size:18px;margin-bottom:18px}
+.sectionhead{margin-bottom:20px}
+.sectionhead h2{font-size:21px}
+.grid{gap:20px}
+.field{margin:16px 0}
+.field label{color:#aec4d7;font-weight:600;font-size:12px;margin-bottom:9px}
+input,select,textarea{background:rgba(5,14,28,.75);border:1px solid rgba(126,170,206,.21);
+border-radius:11px;color:#e8f7ff;padding:12px 14px;transition:border-color .18s,box-shadow .18s,background .18s}
+input:hover,select:hover,textarea:hover{border-color:rgba(129,189,230,.4)}
+input:focus,select:focus,textarea:focus{border-color:#65dfff;background:#0a1a2d;
+box-shadow:0 0 0 4px rgba(63,211,241,.11);outline:0}
+input::placeholder,textarea::placeholder{color:#64839c}
+input[type=checkbox]{accent-color:#65dfff}
+button.primary,button.secondary,button.danger{border-radius:11px;font-weight:700;
+transition:transform .18s,filter .18s,box-shadow .18s,border-color .18s}
+button.primary{background:linear-gradient(120deg,#7defff,#46c9ef);color:#071d30;
+box-shadow:0 6px 23px rgba(40,199,235,.15)}
+button.secondary{background:rgba(28,52,77,.65);border-color:rgba(111,178,215,.23);color:#c5eaff}
+button.danger{background:rgba(125,40,68,.22);border-color:rgba(234,105,138,.3);color:#ffc2d1}
+button.primary:hover:not(:disabled),button.secondary:hover:not(:disabled),button.danger:hover:not(:disabled){
+transform:translateY(-2px);filter:brightness(1.1);box-shadow:0 10px 25px rgba(0,0,0,.19)}
+button:active:not(:disabled){transform:translateY(0)!important}
+button:focus-visible{outline:2px solid #7cefff;outline-offset:3px}
+.actions{gap:10px}
+.list{background:rgba(5,14,27,.38);border:1px solid var(--line);border-radius:13px;scrollbar-color:#31566d transparent}
+.item{padding:14px 16px;border-bottom:1px solid rgba(151,190,223,.09);transition:background .18s}
+.item:hover{background:rgba(52,106,151,.15)}
+.item.selected{background:rgba(38,167,201,.14);border-color:rgba(85,217,248,.28)}
+.tag{border-color:rgba(128,183,215,.2);background:rgba(32,60,83,.35);color:#b1d7ec}
+.hint{color:#87a4ba;line-height:1.75}
+.summary{background:rgba(34,78,106,.19);border-color:rgba(88,196,224,.21);border-radius:12px;line-height:1.7}
+.toast{background:rgba(18,43,64,.96);border-color:rgba(95,222,246,.4);border-radius:15px;
+box-shadow:0 22px 65px rgba(0,0,0,.45);backdrop-filter:blur(14px);animation:toastIn .25s ease both}
+@keyframes toastIn{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.toast.error{border-color:#eb708c}
+::selection{background:rgba(92,220,255,.3);color:white}
+::-webkit-scrollbar{width:9px;height:9px}
+::-webkit-scrollbar-thumb{background:#2c4b64;border:2px solid #0b1423;border-radius:12px}
+::-webkit-scrollbar-track{background:#0b1423}
+@media(max-width:900px){
+ .app{grid-template-columns:1fr}
+ .sidebar{position:relative;height:auto;padding:15px 17px;gap:12px}
+ .brand{padding:7px 6px 12px}
+ .brand::before{display:none}
+ .nav{display:flex;gap:6px;overflow:auto}
+ .nav button{flex-shrink:0}
+ .nav button:hover{transform:none}
+ .main{padding:25px 18px 60px}
+ .metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+ .metric{padding:17px;min-height:110px}
+ .metric strong{font-size:30px}
+ .grid{grid-template-columns:1fr}
+ .top{align-items:flex-start}
+}
+@media(max-width:540px){
+ .metrics{grid-template-columns:1fr}
+ .top .actions{width:100%}
+ .panel{padding:19px}
+ .sectionhead{align-items:flex-start;flex-direction:column}
+ .permission-row{grid-template-columns:1fr}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important;scroll-behavior:auto!important}
+}
+
+</style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / AURORA</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="rules">📜 &nbsp;Règlement</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
 <section id="overview" class="view active"><p class="muted">Pilote ton serveur depuis une interface locale, sans jongler entre les menus Discord.</p><div class="metrics"><div class="metric"><span>Rôles</span><strong id="roleCount">—</strong></div><div class="metric"><span>Salons</span><strong id="channelCount">—</strong></div><div class="metric"><span>Catégories</span><strong id="categoryCount">—</strong></div></div><div class="panel"><h2>Actions rapides</h2><div class="actions"><button class="secondary" data-go="channels">＋ Créer des salons</button><button class="secondary" data-go="roles">◇ Gérer les rôles</button><button class="secondary" data-go="permissions">▣ Modifier les accès</button><button class="secondary" data-go="backup">↓ Exporter la configuration</button></div></div><div class="panel"><h2>Conseil de maintenance</h2><p class="muted">Exporte une sauvegarde JSON avant une modification importante. L'export n'est pas une restauration automatique. Les suppressions sont définitives.</p></div></section>
 <section id="channels" class="view"><div class="grid"><div class="panel"><h2>＋ Création en masse</h2><div class="field"><label>Noms — un par ligne (30 max)</label><textarea id="names" placeholder="💬・discussion&#10;🎮・gaming&#10;📢・annonces"></textarea></div><div class="field"><label>Type</label><select id="kind"><option value="text">Texte</option><option value="voice">Vocal</option><option value="forum">Forum</option><option value="news">Annonces communautaires</option><option value="category">Catégorie</option></select></div><div class="field"><label>Catégorie parente existante</label><select id="createCategory"></select></div>
 <div class="field"><label>OU créer une nouvelle catégorie pour ce lot</label><input id="newCategoryName" maxlength="100" placeholder="Ex. 🎮・GAMING"><p class="hint">Si renseigné, cette catégorie sera créée et accueillera les salons du lot.</p></div>
@@ -10,6 +139,20 @@
 <div class="actions"><button class="secondary small" id="bulkSelectVisible">Sélectionner les résultats</button><button class="secondary small" id="bulkClear">Vider la sélection</button><button class="danger" id="bulkDelete">Supprimer la sélection</button></div></div>
 <div class="panel"><div class="sectionhead"><h2>Catégories du serveur</h2></div><p class="hint">La suppression n'est autorisée que si la catégorie est vide.</p><div id="categoryList" class="list"></div></div>
 <div class="panel"><div class="sectionhead"><h2>Explorateur de salons</h2><input class="search" id="channelSearch" placeholder="Rechercher un salon…"></div><div id="channelList" class="list"></div></div></section>
+<section id="rules" class="view">
+<div class="sectionhead"><h2>📜 Règlement du serveur</h2><span class="tag">Message géré par NEBULA CORE</span></div>
+<div class="grid">
+<div class="panel">
+<h2>Éditeur permanent</h2>
+<p class="hint">Le texte est enregistré localement. Le bouton « Publier / mettre à jour » modifie le message existant du bot dans le salon sélectionné.</p>
+<div class="field"><label>Salon de publication</label><select id="rulesChannel"></select></div>
+<div class="field"><label>Texte du règlement</label><textarea id="rulesContent" style="min-height:510px;line-height:1.65" maxlength="2000" placeholder="Règlement de NEBULA…"></textarea></div>
+<div class="actions" style="align-items:center;justify-content:space-between"><span id="rulesCount" class="hint">0 / 2000 caractères</span><span id="rulesState" class="tag">Non chargé</span></div>
+<div class="actions"><button class="secondary" id="rulesSave">💾 Enregistrer le brouillon</button><button class="primary" id="rulesPublish">↻ Publier / mettre à jour Discord</button></div>
+<p class="hint">Discord limite un message classique à 2 000 caractères. Les mentions @everyone/@here ne sont pas déclenchées. Le bot doit pouvoir voir le salon, envoyer des messages et lire l'historique.</p>
+</div>
+<div class="panel"><h2>Prévisualisation</h2><div id="rulesPreview" style="white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.7;padding:18px;border-radius:14px;background:rgba(5,14,27,.45);border:1px solid rgba(145,188,225,.12);min-height:250px"></div><p class="hint" id="rulesMessageInfo">Aucun message publié par cet outil.</p></div>
+</div></section>
 <section id="history" class="view"><div class="panel"><div class="sectionhead"><h2>Historique des actions locales</h2><button class="secondary small" id="historyRefresh">↻ Actualiser</button></div><p class="hint">100 dernières opérations enregistrées localement dans data/actions.jsonl. Ce journal ne remplace pas les logs d'audit Discord.</p><div id="historyList" class="list"></div></div></section>
 <div class="panel" id="templatePanel" style="display:none"></div>
 <section id="roles" class="view"><div class="grid"><div class="panel"><h2>＋ Créer un rôle</h2><div class="field"><label>Nom</label><input id="roleName" placeholder="✦ Partenaire"></div><div class="field"><label>Couleur</label><input id="roleColor" type="color" value="#00d9ff"></div><button class="primary" id="createRoleBtn">Créer le rôle</button></div><div class="panel"><h2>✎ Modifier un rôle</h2><div class="field"><label>Rôle</label><select id="editRole"></select></div><div class="field"><label>Nom</label><input id="editRoleName"></div><div class="field"><label>Couleur</label><input id="editRoleColor" type="color"></div><div class="actions"><label><input type="checkbox" id="editRoleHoist"> Afficher séparément</label><label><input type="checkbox" id="editRoleMention"> Mentionnable</label></div><div class="actions"><button class="primary" id="saveRoleBtn">Enregistrer</button><button class="danger" id="deleteRoleBtn">Supprimer</button></div><p class="hint">Les rôles intégrés ou gérés par un bot ne sont pas modifiables.</p></div></div><div class="panel"><div class="sectionhead"><h2>Rôles existants</h2><input class="search" id="roleSearch" placeholder="Rechercher un rôle…"></div><div id="roleList" class="list"></div></div></section>
@@ -22,7 +165,7 @@ const permissionLabels={view_channel:'Voir le salon',send_messages:'Envoyer des 
 function toast(message,error=false){let e=$('toast');e.textContent=message;e.className='toast'+(error?' error':'');e.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.style.display='none',6500)}
 async function api(path,method='GET',data){let response=await fetch(path,{method,headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});let j=await response.json();if(!response.ok)throw Error(typeof j.detail==='string'?j.detail:JSON.stringify(j.detail||j));return j}
 async function execute(fn){if(busy)return;busy=true;try{let result=await fn();if(result!==false)await refresh()}catch(e){toast(e.message,true)}finally{busy=false}}
-function go(id){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',permissions:'Permissions en masse',backup:'Sauvegarde'}[id]}
+function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement'}[id]}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.view));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function selectOptions(id,items,empty=false){let el=$(id),selected=el.value;el.replaceChildren();if(empty)el.add(new Option('Aucune catégorie',''));items.forEach(x=>el.add(new Option(x.name,String(x.id))));if([...el.options].some(o=>o.value===selected))el.value=selected}
 function checkboxList(id,items,checkedSet=new Set()){let parent=$(id);parent.replaceChildren();if(!items.length){let e=document.createElement('div');e.className='empty';e.textContent='Aucun résultat';parent.append(e);return}items.forEach(x=>{let row=document.createElement('div');row.className='item';let label=document.createElement('label'),check=document.createElement('input'),name=document.createElement('span');check.type='checkbox';check.value=String(x.id);check.checked=checkedSet.has(String(x.id));name.textContent=x.name;label.append(check,name);row.append(label);if(x.type){let tag=document.createElement('span');tag.className='tag';tag.textContent=x.type;row.append(tag)}parent.append(row)})}
@@ -61,7 +204,7 @@ function updateBulkCount(){$('bulkCount').textContent=bulkSelection.size+' séle
 function creationPreview(){const n=$('names').value.split('\n').filter(x=>x.trim()).length;const newCat=$('newCategoryName').value.trim();$('creationPreview').textContent=n+' salon(s) à créer'+(newCat?' dans la nouvelle catégorie « '+newCat+' »':'')}
 function fillChannel(){let c=state.channels.find(x=>String(x.id)===$('editChannel').value);if(!c)return;$('editName').value=c.name;$('editCategory').value=c.category_id||''}
 function fillRole(){let r=state.roles.find(x=>String(x.id)===$('editRole').value);if(!r)return;$('editRoleName').value=r.name;$('editRoleColor').value=/^#[0-9a-fA-F]{6}$/.test(r.color)?r.color:'#000000';$('editRoleHoist').checked=!!r.hoist;$('editRoleMention').checked=!!r.mentionable;let disabled=!!r.managed;$('saveRoleBtn').disabled=disabled;$('deleteRoleBtn').disabled=disabled}
-async function refresh(){let roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'));try{state=await api('/api/state');for(const id of [...bulkSelection])if(!state.channels.some(c=>String(c.id)===id))bulkSelection.delete(id);$('server').innerHTML='';let dot=document.createElement('i');dot.className='dot';$('server').append(dot,document.createTextNode(state.name));$('roleCount').textContent=state.roles.length;$('channelCount').textContent=state.channels.length;$('categoryCount').textContent=state.categories.length;selectOptions('createCategory',state.categories,true);selectOptions('editCategory',state.categories,true);selectOptions('editChannel',state.channels);selectOptions('editRole',state.roles);fillChannel();fillRole();renderLists();renderChecks(roles,channels)}catch(e){toast(e.message,true);$('server').textContent='● Hors connexion'}}
+async function refresh(){let roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'));try{state=await api('/api/state');for(const id of [...bulkSelection])if(!state.channels.some(c=>String(c.id)===id))bulkSelection.delete(id);$('server').innerHTML='';let dot=document.createElement('i');dot.className='dot';$('server').append(dot,document.createTextNode(state.name));$('roleCount').textContent=state.roles.length;$('channelCount').textContent=state.channels.length;$('categoryCount').textContent=state.categories.length;selectOptions('createCategory',state.categories,true);selectOptions('editCategory',state.categories,true);selectOptions('editChannel',state.channels);selectOptions('editRole',state.roles);fillChannel();fillRole();renderLists();renderChecks(roles,channels);if(rulesLoaded){const sel=$('rulesChannel'),previous=sel.value;sel.replaceChildren();state.channels.filter(c=>['text','news','announcement'].includes(String(c.type).toLowerCase())).forEach(c=>sel.add(new Option('# '+c.name,String(c.id))));if([...sel.options].some(o=>o.value===previous))sel.value=previous}}catch(e){toast(e.message,true);$('server').textContent='● Hors connexion'}}
 function renderChecks(roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'))){checkboxList('roleChecks',state.roles,roles);checkboxList('channelChecks',state.channels.filter(x=>x.name.toLowerCase().includes($('permSearch').value.toLowerCase())),channels);updateSummary()}
 function updateSummary(){let p=[...document.querySelectorAll('[data-permission]')].filter(x=>x.value!=='keep');$('permSummary').textContent=`${checked('roleChecks').length} rôle(s) × ${checked('channelChecks').length} salon(s) · ${p.length} permission(s) à modifier`}
 Object.entries(permissionLabels).forEach(([key,label])=>{let row=document.createElement('div');row.className='permission-row';let text=document.createElement('span');text.textContent=label;let select=document.createElement('select');select.dataset.permission=key;[['keep','Ne pas modifier'],['allow','Autoriser'],['deny','Refuser'],['inherit','Neutre']].forEach(([v,l])=>select.add(new Option(l,v)));select.onchange=updateSummary;row.append(text,select);$('permissionFields').append(row)});
@@ -97,4 +240,47 @@ async function loadHistory(){try{const r=await api('/api/history'),box=$('histor
 $('historyRefresh').onclick=loadHistory;
 document.querySelector('[data-view="history"]').addEventListener('click',loadHistory);
 refresh();
+
+// Règlement : brouillon persistant, aperçu et publication sans doublon.
+let rulesLoaded=false, rulesSavedChannel=null;
+async function loadRules(){
+ const r=await api('/api/rules');
+ $('rulesContent').value=r.content||'';
+ rulesSavedChannel=r.channel_id;
+ const choices=state.channels.filter(c=>['text','news','announcement'].includes(String(c.type).toLowerCase()));
+ const sel=$('rulesChannel');sel.replaceChildren();
+ choices.forEach(c=>sel.add(new Option('# '+c.name,String(c.id))));
+ if(r.channel_id&&[...sel.options].some(o=>o.value===String(r.channel_id)))sel.value=String(r.channel_id);
+ $('rulesMessageInfo').textContent=r.message_id
+   ? 'Message Discord lié : '+r.message_id+' · Salon : '+r.channel_id
+   : 'Pas encore publié : la première publication créera un message.';
+ $('rulesState').textContent=r.message_id?'Message lié':'Brouillon local';
+ rulesLoaded=true;renderRulesPreview();
+}
+function renderRulesPreview(){
+ const content=$('rulesContent').value;
+ $('rulesPreview').textContent=content||'Ton règlement apparaîtra ici.';
+ $('rulesCount').textContent=[...content].length+' / 2000 caractères';
+}
+$('rulesContent').addEventListener('input',renderRulesPreview);
+$('rulesSave').onclick=()=>execute(async()=>{
+ const content=$('rulesContent').value.trim();
+ if(!content)throw Error('Le règlement est vide');
+ await api('/api/rules','PUT',{content});
+ $('rulesState').textContent='Brouillon enregistré';
+ toast('Brouillon enregistré sur ce PC');
+ return false;
+});
+$('rulesPublish').onclick=()=>execute(async()=>{
+ const content=$('rulesContent').value.trim(),channel_id=$('rulesChannel').value;
+ if(!content||!channel_id)throw Error('Ajoute un texte et sélectionne un salon');
+ if(rulesSavedChannel&&String(rulesSavedChannel)!==String(channel_id)){
+   if(!confirm('Tu changes de salon : un NOUVEAU message sera créé. L’ancien restera dans son salon. Continuer ?'))return false;
+ }else if(!confirm('Publier le règlement sur Discord ? Le message existant du bot sera modifié si possible.'))return false;
+ const r=await api('/api/rules/publish','POST',{content,channel_id});
+ toast(r.edited?'Règlement mis à jour sur Discord !':'Règlement publié sur Discord !');
+ await loadRules();
+ return false;
+});
+
 </script></body></html>
