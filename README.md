@@ -1,29 +1,25 @@
-# NEBULA CORE — Control Center V2
+# NEBULA CORE V2.3 — Aurora+
+
+**Fonctionne uniquement lorsque tu lances `start.bat`** : aucune configuration H24.
+
+## Nouveautés
+- Kits de rôles staff et séparateurs visuels NEBULA, sélection multiple, couleur et aperçu, confirmation avant création.
+- Les rôles existants sont ignorés. Les nouveaux rôles sont créés **sans permissions**, non mentionnables.
+- Palette de navigation Ctrl+K (recherche, flèches, Entrée, Échap).
+- Retour sur le dernier onglet ouvert lors d'un rafraîchissement (session du navigateur).
+- Animations et composants visuels affinés.
+- `/api/health` pour distinguer dashboard actif et bot Discord connecté.
+- Règlement, gestion des salons, permissions, historique et export conservés.
 
 ## Installation
+Remplace `app.py`, `index.html`, `start.bat` et `.gitignore` (ou fusionne tes règles d'ignore). **Ne remplace jamais `.env` ni le dossier `data/`.**
 
-1. Fermer l'ancienne instance avec Ctrl+C dans PowerShell.
-2. Extraire le dossier V2.
-3. Copier votre ancien fichier `.env` dans ce dossier (ne jamais le partager).
-4. Ouvrir PowerShell dans ce dossier.
-5. `python -m pip install -r requirements.txt`
-6. `python app.py`
-7. Ouvrir http://127.0.0.1:8765
+Sur ton PC principal, après avoir sauvegardé tes modifications :
+```
+git add app.py index.html start.bat .gitignore
+git commit -m "NEBULA CORE V2.3 Aurora+"
+git push origin main
+```
+Sur le second PC, ton lanceur fait `git pull --ff-only`.
 
-## Nouvelles fonctions
-- Interface bleu nuit/cyan repensée, navigation et recherches.
-- Création en masse de salons et catégories.
-- Renommage, déplacement et suppression de salons.
-- Création, renommage, recoloration et suppression de rôles ; options d'affichage séparé et mentionnable.
-- Permissions en masse multi-rôles, multi-salons et multi-permissions, avec tri-état (autoriser/refuser/neutre).
-- Export de sauvegarde JSON.
-
-## Sécurité et limites
-- L'application est liée uniquement à 127.0.0.1 et n'est pas exposée sur le réseau.
-- Le bot doit disposer des permissions Discord requises et d'une position de rôle suffisante.
-- Les actions destructives demandent la saisie de SUPPRIMER.
-- Les modifications en masse ne sont pas transactionnelles : une erreur peut survenir après quelques changements déjà effectués.
-- L'export JSON ne restaure pas automatiquement le serveur.
-- Les salons de type forum ne peuvent pas être convertis directement depuis un salon texte.
-- Les permissions d'un rôle Administrateur peuvent contourner les restrictions de salon.
-- Ne jamais partager le token ni le fichier `.env`.
+**Attention** : le dashboard est conçu pour `127.0.0.1` en local. Ne l'expose pas directement sur Internet sans authentification.

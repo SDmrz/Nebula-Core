@@ -110,6 +110,10 @@ async def create_category_template(payload: CategoryTemplate):
 async def index():
     return FileResponse(Path(__file__).parent / 'index.html')
 
+@app.get('/api/health')
+async def health():
+    return {'connected': ready.is_set() and not bot.is_closed(), 'bot': str(bot.user) if bot.user else None}
+
 @app.get('/api/state')
 async def state():
     g = await guild()
@@ -133,6 +137,40 @@ async def create_role(payload: RoleCreate):
         raise HTTPException(400, 'Couleur hexadécimale invalide')
     role = await g.create_role(name=payload.name, color=color, reason='Nebula Core dashboard')
     return {'id': str(role.id), 'name': role.name}
+
+
+class RolePreset(BaseModel):
+    name: str = Field(min_length=1, max_length=100)
+    color: str = Field(default='#8eb5d3', pattern=r'^#[0-9a-fA-F]{6}$')
+    hoist: bool = False
+
+class RolePresetBatch(BaseModel):
+    roles: list[RolePreset] = Field(min_length=1, max_length=15)
+
+@app.post('/api/roles/presets')
+async def create_role_presets(payload: RolePresetBatch):
+    g = await guild()
+    names = [r.name.strip() for r in payload.roles]
+    if any(not n for n in names) or len({n.casefold() for n in names}) != len(names):
+        raise HTTPException(400, 'Noms de rôles vides ou dupliqués dans la sélection')
+    existing = {r.name.casefold() for r in g.roles}
+    created, skipped = [], []
+    for preset in payload.roles:
+        name = preset.name.strip()
+        if name.casefold() in existing:
+            skipped.append(name)
+            continue
+        try:
+            role = await g.create_role(name=name, color=discord.Color(int(preset.color[1:], 16)),
+                                       hoist=preset.hoist, mentionable=False,
+                                       permissions=discord.Permissions.none(), reason='Nebula Core V2.3 préréglages')
+        except discord.HTTPException as exc:
+            audit('role_presets_partial', {'created': created, 'skipped': skipped})
+            raise HTTPException(502, f'Création partielle : {len(created)} rôles créés. {exc}')
+        created.append({'id': str(role.id), 'name': role.name})
+        existing.add(name.casefold())
+    audit('role_presets_created', {'created': created, 'skipped': skipped})
+    return {'created': created, 'skipped': skipped}
 
 class ChannelsCreate(BaseModel):
     names: str = Field(min_length=1)
