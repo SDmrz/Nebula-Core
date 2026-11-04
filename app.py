@@ -1,6 +1,8 @@
 import asyncio
 import os
 import json
+import secrets
+import time
 from datetime import datetime, timezone
 from contextlib import asynccontextmanager
 from pathlib import Path
@@ -20,6 +22,7 @@ if not TOKEN or not GUILD_ID:
     raise RuntimeError('Configure DISCORD_BOT_TOKEN et DISCORD_GUILD_ID dans .env')
 
 intents = discord.Intents.default()
+intents.members = True  # Activer aussi Server Members Intent dans le portail Discord
 bot = commands.Bot(command_prefix='!', intents=intents)
 ready = asyncio.Event()
 
@@ -482,6 +485,141 @@ async def publish_rules(payload: RulesPublish):
     save_rules(value)
     audit('rules_published', {'channel_id': str(channel.id), 'message_id': str(msg.id), 'edited': edited})
     return {'published': True, 'edited': edited, 'channel_id': str(channel.id), 'message_id': str(msg.id)}
+
+
+# Synchronisation manuelle des séparateurs : aperçu puis confirmation.
+# La configuration est conservée sur disque et aucun rôle n'est retiré automatiquement.
+SYNC_CONFIG = Path(__file__).parent / 'data' / 'separator_mapping.json'
+SYNC_PREVIEWS = {}
+SYNC_JOB = {'status': 'idle'}
+SYNC_LOCK = asyncio.Lock()
+
+class SeparatorGroup(BaseModel):
+    label: str = Field(min_length=1, max_length=60)
+    separator_id: str
+    source_ids: list[str] = Field(min_length=1, max_length=30)
+
+class SeparatorMapping(BaseModel):
+    groups: list[SeparatorGroup] = Field(min_length=1, max_length=12)
+
+class SeparatorApply(BaseModel):
+    preview_token: str
+
+@app.get('/api/separators/config')
+async def separator_config():
+    await guild()
+    if SYNC_CONFIG.exists():
+        try:
+            return json.loads(SYNC_CONFIG.read_text(encoding='utf-8'))
+        except (ValueError, OSError):
+            pass
+    return {'groups': []}
+
+def validate_separator_mapping(g, mapping):
+    me = g.me
+    if not me or not me.guild_permissions.manage_roles:
+        raise HTTPException(403, 'Le bot doit avoir la permission Gérer les rôles')
+    seen = set()
+    validated = []
+    for item in mapping.groups:
+        try:
+            target = g.get_role(int(item.separator_id))
+            sources = [g.get_role(int(i)) for i in item.source_ids]
+        except ValueError:
+            raise HTTPException(400, 'Identifiant de rôle invalide')
+        if not target or target == g.default_role or target.managed or target >= me.top_role:
+            raise HTTPException(400, f'Séparateur non attribuable : {item.label}')
+        if target.id in seen:
+            raise HTTPException(400, 'Un séparateur ne peut être configuré que dans un seul groupe')
+        if any(not r or r == g.default_role for r in sources):
+            raise HTTPException(400, f'Rôle source introuvable : {item.label}')
+        if target in sources:
+            raise HTTPException(400, f'Un séparateur ne peut pas être son propre déclencheur : {item.label}')
+        seen.add(target.id)
+        validated.append((item.label, target, {r.id for r in sources}))
+    return validated
+
+async def separator_members(g):
+    # REST : parcourt tous les membres, y compris ceux absents du cache.
+    # Nécessite l'intent privilégié Server Members côté Developer Portal.
+    result = []
+    try:
+        async for member in g.fetch_members(limit=None):
+            if not member.bot:
+                result.append(member)
+    except discord.Forbidden:
+        raise HTTPException(403, 'Accès à la liste des membres refusé. Active Server Members Intent dans le portail Discord')
+    return result
+
+@app.post('/api/separators/preview')
+async def separator_preview(mapping: SeparatorMapping):
+    g = await guild()
+    if SYNC_LOCK.locked() or SYNC_JOB.get('status') in ('starting', 'running'):
+        raise HTTPException(409, 'Une synchronisation est déjà en cours')
+    groups = validate_separator_mapping(g, mapping)
+    members = await separator_members(g)
+    operations = []
+    per_group = {label: 0 for label, _, _ in groups}
+    for member in members:
+        ids = {r.id for r in member.roles}
+        missing = [(label, target) for label, target, sources in groups if ids.intersection(sources) and target.id not in ids]
+        if missing:
+            operations.append((member.id, [role.id for _, role in missing]))
+            for label, _ in missing:
+                per_group[label] += 1
+    token = secrets.token_urlsafe(24)
+    SYNC_PREVIEWS.clear()
+    SYNC_PREVIEWS[token] = {'created': time.monotonic(), 'guild': g.id, 'operations': operations}
+    SYNC_CONFIG.parent.mkdir(parents=True, exist_ok=True)
+    SYNC_CONFIG.write_text(json.dumps(mapping.model_dump(), ensure_ascii=False, indent=2), encoding='utf-8')
+    return {'preview_token': token, 'members_scanned': len(members), 'members_to_update': len(operations),
+            'role_additions': sum(len(roles) for _, roles in operations), 'by_group': per_group,
+            'bots_skipped': True, 'removals': 0, 'expires_seconds': 300}
+
+async def run_separator_job(g, operations):
+    async with SYNC_LOCK:
+        SYNC_JOB.update(status='running', total=len(operations), processed=0, updated=0, added=0, errors=0, last_error=None)
+        try:
+            for member_id, role_ids in operations:
+                try:
+                    member = await g.fetch_member(member_id)
+                    if member.bot:
+                        continue
+                    existing = {r.id for r in member.roles}
+                    roles = [g.get_role(rid) for rid in role_ids if rid not in existing]
+                    roles = [r for r in roles if r and not r.managed and r < g.me.top_role]
+                    if roles:
+                        await member.add_roles(*roles, reason='NEBULA CORE : synchronisation manuelle des séparateurs', atomic=True)
+                        SYNC_JOB['updated'] += 1
+                        SYNC_JOB['added'] += len(roles)
+                    await asyncio.sleep(0.35)
+                except (discord.HTTPException, discord.Forbidden) as exc:
+                    SYNC_JOB['errors'] += 1
+                    SYNC_JOB['last_error'] = str(exc)[:180]
+                finally:
+                    SYNC_JOB['processed'] += 1
+            SYNC_JOB['status'] = 'completed'
+        except Exception as exc:
+            SYNC_JOB.update(status='failed', last_error=str(exc)[:200])
+        finally:
+            audit('separator_sync', {k: SYNC_JOB.get(k) for k in ('status','total','updated','added','errors')})
+
+@app.post('/api/separators/apply')
+async def separator_apply(payload: SeparatorApply):
+    g = await guild()
+    if SYNC_LOCK.locked() or SYNC_JOB.get('status') in ('starting', 'running'):
+        raise HTTPException(409, 'Une synchronisation est déjà en cours')
+    preview = SYNC_PREVIEWS.pop(payload.preview_token, None)
+    if not preview or time.monotonic() - preview['created'] > 300 or preview['guild'] != g.id:
+        raise HTTPException(400, 'Aperçu expiré. Relance la prévisualisation')
+    SYNC_JOB.update(status='starting', total=len(preview['operations']), processed=0, updated=0, added=0, errors=0, last_error=None)
+    asyncio.create_task(run_separator_job(g, preview['operations']))
+    return {'started': True, 'total': len(preview['operations'])}
+
+@app.get('/api/separators/progress')
+async def separator_progress():
+    await guild()
+    return SYNC_JOB
 
 if __name__ == '__main__':
     import uvicorn

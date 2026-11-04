@@ -152,7 +152,7 @@ button{letter-spacing:.01em}
 .quick-tools{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .quick-tools .secondary{padding:9px 12px}
 @media(max-width:900px){.sidebar{position:relative;height:auto}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap}}
-</style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / AURORA</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="presets">✦ &nbsp;Atelier de rôles</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="rules">📜 &nbsp;Règlement</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary small" id="openCommands" onclick="openCommands()" title="Navigation rapide Ctrl+K">⌕ Rechercher <span style="opacity:.55">Ctrl K</span></button><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
+</style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / AURORA</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="separators">◈ &nbsp;Séparateurs auto</button><button data-view="presets">✦ &nbsp;Atelier de rôles</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="rules">📜 &nbsp;Règlement</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary small" id="openCommands" onclick="openCommands()" title="Navigation rapide Ctrl+K">⌕ Rechercher <span style="opacity:.55">Ctrl K</span></button><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
 <section id="overview" class="view active"><p class="muted">Pilote ton serveur depuis une interface locale, sans jongler entre les menus Discord.</p><div class="metrics"><div class="metric"><span>Rôles</span><strong id="roleCount">—</strong></div><div class="metric"><span>Salons</span><strong id="channelCount">—</strong></div><div class="metric"><span>Catégories</span><strong id="categoryCount">—</strong></div></div><div class="panel"><h2>Actions rapides</h2><div class="actions"><button class="secondary" data-go="channels">＋ Créer des salons</button><button class="secondary" data-go="roles">◇ Gérer les rôles</button><button class="secondary" data-go="permissions">▣ Modifier les accès</button><button class="secondary" data-go="backup">↓ Exporter la configuration</button></div></div><div class="panel"><h2>Conseil de maintenance</h2><p class="muted">Exporte une sauvegarde JSON avant une modification importante. L'export n'est pas une restauration automatique. Les suppressions sont définitives.</p></div></section>
 <section id="channels" class="view"><div class="grid"><div class="panel"><h2>＋ Création en masse</h2><div class="field"><label>Noms — un par ligne (30 max)</label><textarea id="names" placeholder="💬・discussion&#10;🎮・gaming&#10;📢・annonces"></textarea></div><div class="field"><label>Type</label><select id="kind"><option value="text">Texte</option><option value="voice">Vocal</option><option value="forum">Forum</option><option value="news">Annonces communautaires</option><option value="category">Catégorie</option></select></div><div class="field"><label>Catégorie parente existante</label><select id="createCategory"></select></div>
 <div class="field"><label>OU créer une nouvelle catégorie pour ce lot</label><input id="newCategoryName" maxlength="100" placeholder="Ex. 🎮・GAMING"><p class="hint">Si renseigné, cette catégorie sera créée et accueillera les salons du lot.</p></div>
@@ -178,6 +178,16 @@ button{letter-spacing:.01em}
 </div></section>
 <section id="history" class="view"><div class="panel"><div class="sectionhead"><h2>Historique des actions locales</h2><button class="secondary small" id="historyRefresh">↻ Actualiser</button></div><p class="hint">100 dernières opérations enregistrées localement dans data/actions.jsonl. Ce journal ne remplace pas les logs d'audit Discord.</p><div id="historyList" class="list"></div></div></section>
 <div class="panel" id="templatePanel" style="display:none"></div>
+<section id="separators" class="view">
+<div class="sectionhead"><h2>◈ Synchronisation des séparateurs</h2><span class="tag">Exécution manuelle</span></div>
+<p class="muted">Associe des rôles existants à un séparateur. Un membre possédant au moins un rôle déclencheur reçoit le séparateur correspondant. L'outil parcourt <strong>tous les membres humains</strong>, sans retirer de rôle.</p>
+<div class="panel"><div class="sectionhead"><h2>Règles d'attribution</h2><button class="secondary small" id="sepAdd">＋ Ajouter un groupe</button></div>
+<div id="sepGroups"></div>
+<div class="actions"><button class="secondary" id="sepDefaults">✦ Proposer Haut Staff / Staff / VIP</button><button class="primary" id="sepPreview">◉ Analyser tous les membres</button></div>
+<p class="hint">Sélectionne le rôle séparateur ET les rôles qui le déclenchent. Le bot doit avoir « Gérer les rôles » et être placé au-dessus des séparateurs. Active également <strong>Server Members Intent</strong> dans le portail développeur Discord.</p></div>
+<div class="panel"><h2>Prévisualisation et confirmation</h2><div id="sepResult" class="summary">Aucune analyse lancée.</div><div class="actions"><button class="primary" id="sepApply" disabled>✓ Appliquer à tous les membres</button><button class="secondary" id="sepProgress">↻ Actualiser la progression</button></div><div id="sepJob" class="hint"></div>
+<p class="hint">L'ajout est cumulatif : un membre Haut Staff peut aussi recevoir Staff si tu configures les deux règles. Aucune suppression automatique. L'opération peut durer plusieurs minutes sur un grand serveur.</p></div>
+</section>
 <section id="presets" class="view">
 <div class="sectionhead"><h2>✦ Atelier de rôles</h2><span class="tag">Modèles · Copier/coller · Création en masse</span></div>
 <p class="muted">Pars d'un modèle ou écris tes propres rôles. Chaque ligne représente un rôle ; tu peux modifier les noms, les couleurs et l'affichage séparé avant publication.</p>
@@ -214,7 +224,7 @@ const permissionLabels={view_channel:'Voir le salon',send_messages:'Envoyer des 
 function toast(message,error=false){let e=$('toast');e.textContent=message;e.className='toast'+(error?' error':'');e.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.style.display='none',6500)}
 async function api(path,method='GET',data){let response=await fetch(path,{method,headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});let j=await response.json();if(!response.ok)throw Error(typeof j.detail==='string'?j.detail:JSON.stringify(j.detail||j));return j}
 async function execute(fn){if(busy)return;busy=true;try{let result=await fn();if(result!==false)await refresh()}catch(e){toast(e.message,true)}finally{busy=false}}
-function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',presets:'Atelier de rôles',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement'}[id]}
+function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',presets:'Atelier de rôles',separators:'Séparateurs automatiques',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement'}[id]}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.view));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function selectOptions(id,items,empty=false){let el=$(id),selected=el.value;el.replaceChildren();if(empty)el.add(new Option('Aucune catégorie',''));items.forEach(x=>el.add(new Option(x.name,String(x.id))));if([...el.options].some(o=>o.value===selected))el.value=selected}
 function checkboxList(id,items,checkedSet=new Set()){let parent=$(id);parent.replaceChildren();if(!items.length){let e=document.createElement('div');e.className='empty';e.textContent='Aucun résultat';parent.append(e);return}items.forEach(x=>{let row=document.createElement('div');row.className='item';let label=document.createElement('label'),check=document.createElement('input'),name=document.createElement('span');check.type='checkbox';check.value=String(x.id);check.checked=checkedSet.has(String(x.id));name.textContent=x.name;label.append(check,name);row.append(label);if(x.type){let tag=document.createElement('span');tag.className='tag';tag.textContent=x.type;row.append(tag)}parent.append(row)})}
@@ -253,7 +263,7 @@ function updateBulkCount(){$('bulkCount').textContent=bulkSelection.size+' séle
 function creationPreview(){const n=$('names').value.split('\n').filter(x=>x.trim()).length;const newCat=$('newCategoryName').value.trim();$('creationPreview').textContent=n+' salon(s) à créer'+(newCat?' dans la nouvelle catégorie « '+newCat+' »':'')}
 function fillChannel(){let c=state.channels.find(x=>String(x.id)===$('editChannel').value);if(!c)return;$('editName').value=c.name;$('editCategory').value=c.category_id||''}
 function fillRole(){let r=state.roles.find(x=>String(x.id)===$('editRole').value);if(!r)return;$('editRoleName').value=r.name;$('editRoleColor').value=/^#[0-9a-fA-F]{6}$/.test(r.color)?r.color:'#000000';$('editRoleHoist').checked=!!r.hoist;$('editRoleMention').checked=!!r.mentionable;let disabled=!!r.managed;$('saveRoleBtn').disabled=disabled;$('deleteRoleBtn').disabled=disabled}
-async function refresh(){let roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'));try{state=await api('/api/state');for(const id of [...bulkSelection])if(!state.channels.some(c=>String(c.id)===id))bulkSelection.delete(id);$('server').innerHTML='';let dot=document.createElement('i');dot.className='dot';$('server').append(dot,document.createTextNode(state.name));$('roleCount').textContent=state.roles.length;$('channelCount').textContent=state.channels.length;$('categoryCount').textContent=state.categories.length;selectOptions('createCategory',state.categories,true);selectOptions('editCategory',state.categories,true);selectOptions('editChannel',state.channels);selectOptions('editRole',state.roles);fillChannel();fillRole();renderLists();renderChecks(roles,channels);updateKit();if(rulesLoaded){const sel=$('rulesChannel'),previous=sel.value;sel.replaceChildren();state.channels.filter(c=>['text','news','announcement'].includes(String(c.type).toLowerCase())).forEach(c=>sel.add(new Option('# '+c.name,String(c.id))));if([...sel.options].some(o=>o.value===previous))sel.value=previous}}catch(e){toast(e.message,true);$('server').textContent='● Hors connexion'}}
+async function refresh(){let roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'));try{state=await api('/api/state');for(const id of [...bulkSelection])if(!state.channels.some(c=>String(c.id)===id))bulkSelection.delete(id);$('server').innerHTML='';let dot=document.createElement('i');dot.className='dot';$('server').append(dot,document.createTextNode(state.name));$('roleCount').textContent=state.roles.length;$('channelCount').textContent=state.channels.length;$('categoryCount').textContent=state.categories.length;selectOptions('createCategory',state.categories,true);selectOptions('editCategory',state.categories,true);selectOptions('editChannel',state.channels);selectOptions('editRole',state.roles);fillChannel();fillRole();renderLists();renderChecks(roles,channels);updateKit();if(sepGroups.length)sepRender();if(rulesLoaded){const sel=$('rulesChannel'),previous=sel.value;sel.replaceChildren();state.channels.filter(c=>['text','news','announcement'].includes(String(c.type).toLowerCase())).forEach(c=>sel.add(new Option('# '+c.name,String(c.id))));if([...sel.options].some(o=>o.value===previous))sel.value=previous}}catch(e){toast(e.message,true);$('server').textContent='● Hors connexion'}}
 function renderChecks(roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'))){checkboxList('roleChecks',state.roles,roles);checkboxList('channelChecks',state.channels.filter(x=>x.name.toLowerCase().includes($('permSearch').value.toLowerCase())),channels);updateSummary()}
 function updateSummary(){let p=[...document.querySelectorAll('[data-permission]')].filter(x=>x.value!=='keep');$('permSummary').textContent=`${checked('roleChecks').length} rôle(s) × ${checked('channelChecks').length} salon(s) · ${p.length} permission(s) à modifier`}
 Object.entries(permissionLabels).forEach(([key,label])=>{let row=document.createElement('div');row.className='permission-row';let text=document.createElement('span');text.textContent=label;let select=document.createElement('select');select.dataset.permission=key;[['keep','Ne pas modifier'],['allow','Autoriser'],['deny','Refuser'],['inherit','Neutre']].forEach(([v,l])=>select.add(new Option(l,v)));select.onchange=updateSummary;row.append(text,select);$('permissionFields').append(row)});
@@ -379,7 +389,7 @@ $('kitCreate').onclick=()=>execute(async()=>{const {roles,errors}=parseKit();if(
  const result=await api('/api/roles/presets','POST',{roles:newRoles});toast(result.created.length+' rôle(s) créé(s) · '+result.skipped.length+' ignoré(s)');await refresh();updateKit();return false;
 });
 updateKit();
-const commandPages=[['overview','Vue d’ensemble'],['channels','Salons et catégories'],['roles','Gestion des rôles'],['presets','Atelier de rôles'],['permissions','Permissions en masse'],['rules','Règlement'],['history','Historique'],['backup','Sauvegarde']];
+const commandPages=[['overview','Vue d’ensemble'],['channels','Salons et catégories'],['roles','Gestion des rôles'],['presets','Atelier de rôles'],['separators','Séparateurs automatiques'],['permissions','Permissions en masse'],['rules','Règlement'],['history','Historique'],['backup','Sauvegarde']];
 let commandIndex=0;
 function updateCommands(){
  const query=$('commandInput').value.trim().toLocaleLowerCase();const results=$('commandResults');results.replaceChildren();
@@ -405,5 +415,68 @@ document.addEventListener('keydown',e=>{
 const originalGo=go;
 go=function(id){originalGo(id);try{sessionStorage.setItem('nebula-tab',id)}catch(e){}};
 try{const tab=sessionStorage.getItem('nebula-tab');if(tab&&document.getElementById(tab))go(tab)}catch(e){}
+
+
+// NEBULA : attribution des séparateurs sur demande uniquement.
+let sepToken=null,sepGroups=[],sepTimer=null;
+function sepRoleOptions(selected='',allowEmpty=true){
+ const s=document.createElement('select');
+ if(allowEmpty)s.add(new Option('— Choisir un séparateur —',''));
+ state.roles.filter(r=>!r.managed).forEach(r=>s.add(new Option(r.name,r.id)));
+ if(selected)s.value=String(selected);
+ return s;
+}
+function sepRender(){
+ const root=$('sepGroups');root.replaceChildren();
+ sepGroups.forEach((group,index)=>{
+  const wrap=document.createElement('div');wrap.className='panel';wrap.style.margin='12px 0';
+  const head=document.createElement('div');head.className='sectionhead';
+  const title=document.createElement('input');title.placeholder='Nom du groupe (ex. Staff)';title.value=group.label;
+  title.oninput=()=>{group.label=title.value;sepInvalidate()};
+  const remove=document.createElement('button');remove.className='danger small';remove.textContent='Supprimer';remove.onclick=()=>{sepGroups.splice(index,1);sepInvalidate();sepRender()};
+  head.append(title,remove);
+  const label=document.createElement('label');label.textContent='Rôle séparateur à attribuer';
+  const target=sepRoleOptions(group.separator_id);target.onchange=()=>{group.separator_id=target.value;sepInvalidate()};
+  const srcLabel=document.createElement('label');srcLabel.textContent='Rôles déclencheurs (un seul suffit)';
+  const list=document.createElement('div');list.className='list';list.style.maxHeight='180px';list.style.overflow='auto';
+  state.roles.filter(r=>!r.managed&&String(r.id)!==String(group.separator_id)).forEach(role=>{
+    const row=document.createElement('label');row.className='item';row.style.display='flex';row.style.gap='10px';
+    const cb=document.createElement('input');cb.type='checkbox';cb.checked=group.source_ids.includes(String(role.id));
+    cb.onchange=()=>{group.source_ids=cb.checked?[...group.source_ids,String(role.id)]:group.source_ids.filter(id=>id!==String(role.id));sepInvalidate()};
+    row.append(cb,document.createTextNode(role.name));list.append(row);
+  });
+  target.addEventListener('change',sepRender);
+  wrap.append(head,label,target,srcLabel,list);root.append(wrap);
+ });
+}
+function sepInvalidate(){sepToken=null;$('sepApply').disabled=true;$('sepResult').textContent='Configuration modifiée : relance une analyse avant application.'}
+$('sepAdd').onclick=()=>{sepGroups.push({label:'Nouveau groupe',separator_id:'',source_ids:[]});sepInvalidate();sepRender()};
+$('sepDefaults').onclick=()=>{
+ const patterns=[['Haut Staff',['fondateur','administrateur','responsable de pôle']],['Staff',['modérateur','helpeur','animateur']],['VIP',['vip','partenaire','créateur']]];
+ const normalize=s=>s.toLocaleLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+ sepGroups=patterns.map(([label,names])=>{
+  const target=state.roles.find(r=>normalize(r.name).includes(normalize(label))&&/[━─]/.test(r.name));
+  const source=state.roles.filter(r=>names.some(n=>normalize(r.name).includes(normalize(n)))&&r.id!==target?.id);
+  return {label,separator_id:target?String(target.id):'',source_ids:source.map(r=>String(r.id))};
+ });sepInvalidate();sepRender();toast('Propositions chargées : vérifie les correspondances avant analyse');
+};
+$('sepPreview').onclick=()=>execute(async()=>{
+ if(!sepGroups.length)throw Error('Ajoute au moins un groupe');
+ if(sepGroups.some(g=>!g.separator_id||!g.source_ids.length))throw Error('Chaque groupe doit avoir un séparateur et au moins un déclencheur');
+ const r=await api('/api/separators/preview','POST',{groups:sepGroups});sepToken=r.preview_token;
+ $('sepResult').textContent=`${r.members_scanned} membres humains analysés · ${r.members_to_update} membres à modifier · ${r.role_additions} attributions · 0 suppression.\n`+Object.entries(r.by_group).map(([k,v])=>`${k} : ${v} attribution(s)`).join('\n');
+ $('sepResult').style.whiteSpace='pre-wrap';$('sepApply').disabled=!r.members_to_update;
+ toast('Analyse terminée. Vérifie le résultat avant confirmation.');return false;
+});
+async function sepUpdateProgress(){const r=await api('/api/separators/progress');$('sepJob').textContent=`Statut : ${r.status} · ${r.processed||0}/${r.total||0} traités · ${r.updated||0} membres modifiés · ${r.added||0} rôles ajoutés · ${r.errors||0} erreurs`+(r.last_error?' · '+r.last_error:'');if(r.status==='completed'||r.status==='failed'){if(sepTimer){clearInterval(sepTimer);sepTimer=null}}}
+$('sepApply').onclick=()=>execute(async()=>{
+ if(!sepToken)throw Error('Lance d’abord une analyse');
+ if(!confirm('CONFIRMER : attribuer les séparateurs aux membres détectés ? Aucune suppression, mais les ajouts sont réels sur Discord.'))return false;
+ await api('/api/separators/apply','POST',{preview_token:sepToken});sepInvalidate();await sepUpdateProgress();
+ if(sepTimer)clearInterval(sepTimer);sepTimer=setInterval(()=>sepUpdateProgress().catch(()=>{}),2500);
+ toast('Synchronisation lancée !');return false;
+});
+$('sepProgress').onclick=()=>sepUpdateProgress().catch(e=>toast(e.message,true));
+api('/api/separators/config').then(c=>{sepGroups=c.groups||[];sepRender()}).catch(()=>{});
 
 </script></body></html>

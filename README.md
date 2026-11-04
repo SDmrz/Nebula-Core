@@ -1,14 +1,19 @@
-# NEBULA CORE V2.4 — Atelier de rôles
-
-## Nouveautés
-- 5 templates copiables : Staff, Séparateurs, Équipe créative, Communauté & VIP, Minimaliste.
-- Éditeur de rôles personnalisés en masse, 1 rôle par ligne.
-- Format : `Nom | #RRGGBB | oui/non` (couleur et affichage séparé facultatifs).
-- Charger, ajouter au brouillon, copier le template, copier le brouillon.
-- Prévisualisation et validation (doublons, couleurs, noms, limite 15).
-- Création en masse avec l'endpoint V2.3 existant, sans permission attribuée.
+# NEBULA CORE V2.5 — Synchronisation manuelle des séparateurs
 
 ## Installation
-Remplacer seulement `index.html` (ou `app.py` et `start.bat` uniquement si vous n'avez pas déjà V2.3). Garder `.env` et `data/`. Actualiser le navigateur avec Ctrl+F5.
+Remplacer `app.py`, `index.html`, `start.bat` et compléter `.gitignore`. Conserver `.env` et `data/`.
 
-Le bot reste lancé à la demande. La création réelle des rôles doit être testée avec le bot connecté à Discord. Les nouveaux rôles sont ajoutés par Discord et peuvent nécessiter un réordonnancement manuel.
+**Obligatoire :** Discord Developer Portal → Bot → Privileged Gateway Intents → **Server Members Intent** = ON. Le bot doit avoir **Gérer les rôles** et son rôle doit être au-dessus des séparateurs.
+
+Onglet **Séparateurs auto** : configurer les groupes (séparateur + rôles déclencheurs), cliquer **Analyser tous les membres**, lire le décompte, puis **Appliquer à tous les membres**. Le traitement progresse en arrière-plan et peut durer plusieurs minutes.
+
+- Analyse complète par `guild.fetch_members(limit=None)`, sans dépendre du cache.
+- Ignore les bots et les rôles déjà présents.
+- N'enlève jamais les rôles existants.
+- Vérifie la hiérarchie du bot.
+- Confirme sur un aperçu valable 5 minutes.
+- Règles enregistrées dans `data/separator_mapping.json` (local, hors Git).
+- Cette fonctionnalité est **manuelle**, pas un bot H24.
+- La page web reste **locale** (`127.0.0.1:8765`).
+
+La synchronisation traite tous les membres humains et applique les groupes indépendamment : un Haut Staff peut aussi recevoir le séparateur Staff s'il possède un rôle déclencheur Staff. Vérifier le mapping avant d'appliquer.
