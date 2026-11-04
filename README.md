@@ -1,25 +1,14 @@
-# NEBULA CORE V2.3 — Aurora+
-
-**Fonctionne uniquement lorsque tu lances `start.bat`** : aucune configuration H24.
+# NEBULA CORE V2.4 — Atelier de rôles
 
 ## Nouveautés
-- Kits de rôles staff et séparateurs visuels NEBULA, sélection multiple, couleur et aperçu, confirmation avant création.
-- Les rôles existants sont ignorés. Les nouveaux rôles sont créés **sans permissions**, non mentionnables.
-- Palette de navigation Ctrl+K (recherche, flèches, Entrée, Échap).
-- Retour sur le dernier onglet ouvert lors d'un rafraîchissement (session du navigateur).
-- Animations et composants visuels affinés.
-- `/api/health` pour distinguer dashboard actif et bot Discord connecté.
-- Règlement, gestion des salons, permissions, historique et export conservés.
+- 5 templates copiables : Staff, Séparateurs, Équipe créative, Communauté & VIP, Minimaliste.
+- Éditeur de rôles personnalisés en masse, 1 rôle par ligne.
+- Format : `Nom | #RRGGBB | oui/non` (couleur et affichage séparé facultatifs).
+- Charger, ajouter au brouillon, copier le template, copier le brouillon.
+- Prévisualisation et validation (doublons, couleurs, noms, limite 15).
+- Création en masse avec l'endpoint V2.3 existant, sans permission attribuée.
 
 ## Installation
-Remplace `app.py`, `index.html`, `start.bat` et `.gitignore` (ou fusionne tes règles d'ignore). **Ne remplace jamais `.env` ni le dossier `data/`.**
+Remplacer seulement `index.html` (ou `app.py` et `start.bat` uniquement si vous n'avez pas déjà V2.3). Garder `.env` et `data/`. Actualiser le navigateur avec Ctrl+F5.
 
-Sur ton PC principal, après avoir sauvegardé tes modifications :
-```
-git add app.py index.html start.bat .gitignore
-git commit -m "NEBULA CORE V2.3 Aurora+"
-git push origin main
-```
-Sur le second PC, ton lanceur fait `git pull --ff-only`.
-
-**Attention** : le dashboard est conçu pour `127.0.0.1` en local. Ne l'expose pas directement sur Internet sans authentification.
+Le bot reste lancé à la demande. La création réelle des rôles doit être testée avec le bot connecté à Discord. Les nouveaux rôles sont ajoutés par Discord et peuvent nécessiter un réordonnancement manuel.

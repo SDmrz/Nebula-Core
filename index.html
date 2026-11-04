@@ -152,7 +152,7 @@ button{letter-spacing:.01em}
 .quick-tools{display:flex;gap:9px;flex-wrap:wrap;align-items:center}
 .quick-tools .secondary{padding:9px 12px}
 @media(max-width:900px){.sidebar{position:relative;height:auto}.nav{display:flex;overflow-x:auto}.nav button{white-space:nowrap}}
-</style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / AURORA</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="presets">✦ &nbsp;Kits de rôles</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="rules">📜 &nbsp;Règlement</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary small" id="openCommands" onclick="openCommands()" title="Navigation rapide Ctrl+K">⌕ Rechercher <span style="opacity:.55">Ctrl K</span></button><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
+</style></head><body><div class="app"><aside class="sidebar"><div class="brand"><strong>◇ NEBULA CORE</strong><small>CONTROL CENTER / AURORA</small></div><div class="nav"><button class="active" data-view="overview">◈ &nbsp;Vue d'ensemble</button><button data-view="channels"># &nbsp;Salons & catégories</button><button data-view="presets">✦ &nbsp;Atelier de rôles</button><button data-view="roles">◇ &nbsp;Rôles</button><button data-view="permissions">▣ &nbsp;Permissions en masse</button><button data-view="rules">📜 &nbsp;Règlement</button><button data-view="history">◷ &nbsp;Historique</button><button data-view="backup">▤ &nbsp;Sauvegarde</button></div><div class="foot">● Maintenance locale<br>Les modifications sont appliquées sur Discord.<br>NEBULA / BLUE EDITION</div></aside><main class="main"><div class="top"><div><div class="eyebrow">Administration Discord</div><h1 id="pageTitle">Vue d'ensemble</h1></div><div class="actions"><button class="secondary small" id="openCommands" onclick="openCommands()" title="Navigation rapide Ctrl+K">⌕ Rechercher <span style="opacity:.55">Ctrl K</span></button><button class="secondary" id="refreshBtn">↻ Actualiser</button><span class="connection" id="server">Connexion…</span></div></div>
 <section id="overview" class="view active"><p class="muted">Pilote ton serveur depuis une interface locale, sans jongler entre les menus Discord.</p><div class="metrics"><div class="metric"><span>Rôles</span><strong id="roleCount">—</strong></div><div class="metric"><span>Salons</span><strong id="channelCount">—</strong></div><div class="metric"><span>Catégories</span><strong id="categoryCount">—</strong></div></div><div class="panel"><h2>Actions rapides</h2><div class="actions"><button class="secondary" data-go="channels">＋ Créer des salons</button><button class="secondary" data-go="roles">◇ Gérer les rôles</button><button class="secondary" data-go="permissions">▣ Modifier les accès</button><button class="secondary" data-go="backup">↓ Exporter la configuration</button></div></div><div class="panel"><h2>Conseil de maintenance</h2><p class="muted">Exporte une sauvegarde JSON avant une modification importante. L'export n'est pas une restauration automatique. Les suppressions sont définitives.</p></div></section>
 <section id="channels" class="view"><div class="grid"><div class="panel"><h2>＋ Création en masse</h2><div class="field"><label>Noms — un par ligne (30 max)</label><textarea id="names" placeholder="💬・discussion&#10;🎮・gaming&#10;📢・annonces"></textarea></div><div class="field"><label>Type</label><select id="kind"><option value="text">Texte</option><option value="voice">Vocal</option><option value="forum">Forum</option><option value="news">Annonces communautaires</option><option value="category">Catégorie</option></select></div><div class="field"><label>Catégorie parente existante</label><select id="createCategory"></select></div>
 <div class="field"><label>OU créer une nouvelle catégorie pour ce lot</label><input id="newCategoryName" maxlength="100" placeholder="Ex. 🎮・GAMING"><p class="hint">Si renseigné, cette catégorie sera créée et accueillera les salons du lot.</p></div>
@@ -178,10 +178,31 @@ button{letter-spacing:.01em}
 </div></section>
 <section id="history" class="view"><div class="panel"><div class="sectionhead"><h2>Historique des actions locales</h2><button class="secondary small" id="historyRefresh">↻ Actualiser</button></div><p class="hint">100 dernières opérations enregistrées localement dans data/actions.jsonl. Ce journal ne remplace pas les logs d'audit Discord.</p><div id="historyList" class="list"></div></div></section>
 <div class="panel" id="templatePanel" style="display:none"></div>
-<section id="presets" class="view"><div class="sectionhead"><h2>✦ Kits de rôles NEBULA</h2><span class="tag">Création rapide · sans permissions</span></div>
-<p class="muted">Sélectionne les rôles à créer. Les rôles déjà existants seront ignorés ; aucune permission sensible n'est attribuée automatiquement.</p>
-<div class="grid"><div class="panel"><h2>Bibliothèque de rôles</h2><div class="actions" style="margin-bottom:16px"><button class="secondary small" id="presetAll">Tout sélectionner</button><button class="secondary small" id="presetNone">Tout désélectionner</button></div><div id="presetList" class="list"></div></div>
-<div class="panel"><h2>Aperçu de création</h2><div class="summary" id="presetSummary">Sélectionne des rôles.</div><button class="primary" id="presetCreate">✦ Créer les rôles sélectionnés</button><p class="hint">Les séparateurs sont des rôles Discord classiques. Pour les afficher séparément dans la liste des membres, ils doivent être attribués et devenir le rôle affiché le plus haut du membre.</p></div></div></section>
+<section id="presets" class="view">
+<div class="sectionhead"><h2>✦ Atelier de rôles</h2><span class="tag">Modèles · Copier/coller · Création en masse</span></div>
+<p class="muted">Pars d'un modèle ou écris tes propres rôles. Chaque ligne représente un rôle ; tu peux modifier les noms, les couleurs et l'affichage séparé avant publication.</p>
+<div class="grid">
+ <div class="panel"><h2>01 · Bibliothèque de modèles</h2>
+  <div class="field"><label>Choisir un template</label><select id="kitTemplate"></select></div>
+  <div id="kitTemplateDescription" class="hint"></div>
+  <div class="actions"><button class="secondary" id="kitLoad">↙ Charger dans l'éditeur</button><button class="secondary" id="kitAppend">＋ Ajouter au brouillon</button><button class="secondary" id="kitCopy">⧉ Copier le template</button></div>
+  <div class="summary" id="kitTemplatePreview" style="white-space:pre-wrap;max-height:220px;overflow:auto"></div>
+ </div>
+ <div class="panel"><h2>02 · Ton éditeur en masse</h2>
+  <p class="hint">Format : <code>Nom du rôle | #HEX | séparé</code>. Couleur et « séparé » facultatifs. Exemple : <code>✧ Animateur | #76DCC9</code>. Ajoute <code>oui</code> en 3e colonne pour afficher le rôle séparément.</p>
+  <div class="field"><label>Un rôle par ligne (maximum 15)</label><textarea id="kitEditor" spellcheck="false" style="min-height:275px;font-family:Consolas,monospace;line-height:1.65" placeholder="✦ Fondateur | #F2C879
+◆ Administrateur | #E8B66D
+◈ Responsable de Pôle | #B4A0F8
+✦ ━━━ HAUT STAFF ━━━ ✦ | #F0C878 | oui"></textarea></div>
+  <div class="actions"><button class="secondary small" id="kitCopyDraft">⧉ Copier mon brouillon</button><button class="secondary small" id="kitClear">Effacer</button></div>
+ </div>
+</div>
+<div class="panel"><div class="sectionhead"><h2>03 · Prévisualisation</h2><span id="kitCount" class="tag">0 / 15 rôles</span></div>
+ <div id="kitErrors" class="warning" role="alert"></div><div class="list" id="kitPreview" style="max-height:390px"></div>
+ <div id="kitSummary" class="summary">Ajoute des rôles pour voir le résultat.</div>
+ <div class="actions"><button class="primary" id="kitCreate" disabled>✦ Créer les rôles sur Discord</button></div>
+ <p class="hint">Aucune permission n'est accordée automatiquement. Les noms déjà présents sur le serveur sont ignorés. Les rôles sont créés dans l'ordre indiqué ; tu pourras ensuite les déplacer dans Discord.</p>
+</div></section>
 <section id="roles" class="view"><div class="grid"><div class="panel"><h2>＋ Créer un rôle</h2><div class="field"><label>Nom</label><input id="roleName" placeholder="✦ Partenaire"></div><div class="field"><label>Couleur</label><input id="roleColor" type="color" value="#00d9ff"></div><button class="primary" id="createRoleBtn">Créer le rôle</button></div><div class="panel"><h2>✎ Modifier un rôle</h2><div class="field"><label>Rôle</label><select id="editRole"></select></div><div class="field"><label>Nom</label><input id="editRoleName"></div><div class="field"><label>Couleur</label><input id="editRoleColor" type="color"></div><div class="actions"><label><input type="checkbox" id="editRoleHoist"> Afficher séparément</label><label><input type="checkbox" id="editRoleMention"> Mentionnable</label></div><div class="actions"><button class="primary" id="saveRoleBtn">Enregistrer</button><button class="danger" id="deleteRoleBtn">Supprimer</button></div><p class="hint">Les rôles intégrés ou gérés par un bot ne sont pas modifiables.</p></div></div><div class="panel"><div class="sectionhead"><h2>Rôles existants</h2><input class="search" id="roleSearch" placeholder="Rechercher un rôle…"></div><div id="roleList" class="list"></div></div></section>
 <section id="permissions" class="view"><p class="muted">Sélectionne plusieurs rôles et salons, puis définis uniquement les permissions à modifier. Les permissions non sélectionnées restent inchangées.</p><div class="grid"><div class="panel"><div class="sectionhead"><h2>1. Rôles</h2><div class="actions"><button class="secondary small" id="rolesAll">Tout</button><button class="secondary small" id="rolesNone">Aucun</button></div></div><div class="list" id="roleChecks"></div></div><div class="panel"><div class="sectionhead"><h2>2. Salons</h2><div class="actions"><button class="secondary small" id="channelsAll">Tout</button><button class="secondary small" id="channelsNone">Aucun</button></div></div><input id="permSearch" placeholder="Filtrer les salons…" style="margin-bottom:12px"><div class="list" id="channelChecks"></div></div></div><div class="panel"><h2>3. Permissions à appliquer</h2><p class="hint">« Ne pas modifier » laisse la permission actuelle intacte. « Neutre » retire une règle explicite pour ce rôle sur ces salons.</p><div id="permissionFields" class="grid"></div><div class="summary" id="permSummary">Aucune modification sélectionnée.</div><button class="primary" id="applyPermissionsBtn">Prévisualiser et appliquer</button></div></section>
 <section id="backup" class="view"><div class="panel"><h2>↓ Export JSON</h2><p class="muted">Télécharge un instantané des rôles, salons, catégories et écrasements de permissions. Les messages ne sont pas sauvegardés et ce fichier ne peut pas encore être restauré automatiquement.</p><button class="primary" id="backupBtn">Télécharger la sauvegarde</button></div></section>
@@ -193,7 +214,7 @@ const permissionLabels={view_channel:'Voir le salon',send_messages:'Envoyer des 
 function toast(message,error=false){let e=$('toast');e.textContent=message;e.className='toast'+(error?' error':'');e.style.display='block';clearTimeout(toast.timer);toast.timer=setTimeout(()=>e.style.display='none',6500)}
 async function api(path,method='GET',data){let response=await fetch(path,{method,headers:{'Content-Type':'application/json'},body:data===undefined?undefined:JSON.stringify(data)});let j=await response.json();if(!response.ok)throw Error(typeof j.detail==='string'?j.detail:JSON.stringify(j.detail||j));return j}
 async function execute(fn){if(busy)return;busy=true;try{let result=await fn();if(result!==false)await refresh()}catch(e){toast(e.message,true)}finally{busy=false}}
-function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',presets:'Kits de rôles',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement'}[id]}
+function go(id){if(id==='rules'&&!rulesLoaded)loadRules().catch(e=>toast(e.message,true));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id===id));document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.view===id));$('pageTitle').textContent={overview:'Vue d’ensemble',channels:'Salons & catégories',roles:'Gestion des rôles',presets:'Atelier de rôles',permissions:'Permissions en masse',backup:'Sauvegarde',rules:'Règlement'}[id]}
 document.querySelectorAll('[data-view]').forEach(b=>b.onclick=()=>go(b.dataset.view));document.querySelectorAll('[data-go]').forEach(b=>b.onclick=()=>go(b.dataset.go));
 function selectOptions(id,items,empty=false){let el=$(id),selected=el.value;el.replaceChildren();if(empty)el.add(new Option('Aucune catégorie',''));items.forEach(x=>el.add(new Option(x.name,String(x.id))));if([...el.options].some(o=>o.value===selected))el.value=selected}
 function checkboxList(id,items,checkedSet=new Set()){let parent=$(id);parent.replaceChildren();if(!items.length){let e=document.createElement('div');e.className='empty';e.textContent='Aucun résultat';parent.append(e);return}items.forEach(x=>{let row=document.createElement('div');row.className='item';let label=document.createElement('label'),check=document.createElement('input'),name=document.createElement('span');check.type='checkbox';check.value=String(x.id);check.checked=checkedSet.has(String(x.id));name.textContent=x.name;label.append(check,name);row.append(label);if(x.type){let tag=document.createElement('span');tag.className='tag';tag.textContent=x.type;row.append(tag)}parent.append(row)})}
@@ -232,7 +253,7 @@ function updateBulkCount(){$('bulkCount').textContent=bulkSelection.size+' séle
 function creationPreview(){const n=$('names').value.split('\n').filter(x=>x.trim()).length;const newCat=$('newCategoryName').value.trim();$('creationPreview').textContent=n+' salon(s) à créer'+(newCat?' dans la nouvelle catégorie « '+newCat+' »':'')}
 function fillChannel(){let c=state.channels.find(x=>String(x.id)===$('editChannel').value);if(!c)return;$('editName').value=c.name;$('editCategory').value=c.category_id||''}
 function fillRole(){let r=state.roles.find(x=>String(x.id)===$('editRole').value);if(!r)return;$('editRoleName').value=r.name;$('editRoleColor').value=/^#[0-9a-fA-F]{6}$/.test(r.color)?r.color:'#000000';$('editRoleHoist').checked=!!r.hoist;$('editRoleMention').checked=!!r.mentionable;let disabled=!!r.managed;$('saveRoleBtn').disabled=disabled;$('deleteRoleBtn').disabled=disabled}
-async function refresh(){let roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'));try{state=await api('/api/state');for(const id of [...bulkSelection])if(!state.channels.some(c=>String(c.id)===id))bulkSelection.delete(id);$('server').innerHTML='';let dot=document.createElement('i');dot.className='dot';$('server').append(dot,document.createTextNode(state.name));$('roleCount').textContent=state.roles.length;$('channelCount').textContent=state.channels.length;$('categoryCount').textContent=state.categories.length;selectOptions('createCategory',state.categories,true);selectOptions('editCategory',state.categories,true);selectOptions('editChannel',state.channels);selectOptions('editRole',state.roles);fillChannel();fillRole();renderLists();renderChecks(roles,channels);updatePresets();if(rulesLoaded){const sel=$('rulesChannel'),previous=sel.value;sel.replaceChildren();state.channels.filter(c=>['text','news','announcement'].includes(String(c.type).toLowerCase())).forEach(c=>sel.add(new Option('# '+c.name,String(c.id))));if([...sel.options].some(o=>o.value===previous))sel.value=previous}}catch(e){toast(e.message,true);$('server').textContent='● Hors connexion'}}
+async function refresh(){let roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'));try{state=await api('/api/state');for(const id of [...bulkSelection])if(!state.channels.some(c=>String(c.id)===id))bulkSelection.delete(id);$('server').innerHTML='';let dot=document.createElement('i');dot.className='dot';$('server').append(dot,document.createTextNode(state.name));$('roleCount').textContent=state.roles.length;$('channelCount').textContent=state.channels.length;$('categoryCount').textContent=state.categories.length;selectOptions('createCategory',state.categories,true);selectOptions('editCategory',state.categories,true);selectOptions('editChannel',state.channels);selectOptions('editRole',state.roles);fillChannel();fillRole();renderLists();renderChecks(roles,channels);updateKit();if(rulesLoaded){const sel=$('rulesChannel'),previous=sel.value;sel.replaceChildren();state.channels.filter(c=>['text','news','announcement'].includes(String(c.type).toLowerCase())).forEach(c=>sel.add(new Option('# '+c.name,String(c.id))));if([...sel.options].some(o=>o.value===previous))sel.value=previous}}catch(e){toast(e.message,true);$('server').textContent='● Hors connexion'}}
 function renderChecks(roles=new Set(checked('roleChecks')),channels=new Set(checked('channelChecks'))){checkboxList('roleChecks',state.roles,roles);checkboxList('channelChecks',state.channels.filter(x=>x.name.toLowerCase().includes($('permSearch').value.toLowerCase())),channels);updateSummary()}
 function updateSummary(){let p=[...document.querySelectorAll('[data-permission]')].filter(x=>x.value!=='keep');$('permSummary').textContent=`${checked('roleChecks').length} rôle(s) × ${checked('channelChecks').length} salon(s) · ${p.length} permission(s) à modifier`}
 Object.entries(permissionLabels).forEach(([key,label])=>{let row=document.createElement('div');row.className='permission-row';let text=document.createElement('span');text.textContent=label;let select=document.createElement('select');select.dataset.permission=key;[['keep','Ne pas modifier'],['allow','Autoriser'],['deny','Refuser'],['inherit','Neutre']].forEach(([v,l])=>select.add(new Option(l,v)));select.onchange=updateSummary;row.append(text,select);$('permissionFields').append(row)});
@@ -312,56 +333,53 @@ $('rulesPublish').onclick=()=>execute(async()=>{
 });
 
 
-// V2.3: kits de rôles et navigation clavier
-const presetRoles=[
- {name:'✦ Fondateur',color:'#f2c879'},
- {name:'◆ Administrateur',color:'#e8b66d'},
- {name:'◈ Responsable de Pôle',color:'#b4a0f8'},
- {name:'⬡ Modérateur',color:'#75b9fa'},
- {name:'◇ Helpeur',color:'#80c6e7'},
- {name:'✧ Animateur',color:'#76dcc9'},
- {name:'✺ Organisateur d’Événements',color:'#e0a6eb'},
- {name:'⟡ Développeur',color:'#8aaaff'},
- {name:'❖ Graphiste',color:'#f4a4c4'},
- {name:'◌ Staff en Formation',color:'#9ca9bc'},
- {name:'✦ ━━━━━ HAUT STAFF ━━━━━ ✦',color:'#f0c878',hoist:true},
- {name:'◆ ━━━━━ STAFF ━━━━━ ◆',color:'#a996f5',hoist:true},
- {name:'✧ ━━━━━ ÉQUIPE CRÉATIVE ━━━━━ ✧',color:'#79d8d0',hoist:true},
- {name:'◇ ━━━━━ VIP ━━━━━ ◇',color:'#e6a5cd',hoist:true},
- {name:'◈ ━━━━━ MEMBRES ━━━━━ ◈',color:'#9db2c7',hoist:true}
-];
-function renderPresets(){
- const root=$('presetList');root.replaceChildren();
- presetRoles.forEach((p,i)=>{
-  const row=document.createElement('div');row.className='item preset-item';
-  const label=document.createElement('label');const input=document.createElement('input');input.type='checkbox';input.value=String(i);input.className='preset-check';
-  const dot=document.createElement('i');dot.className='preset-color';dot.style.background=p.color;
-  const name=document.createElement('span');name.textContent=p.name;
-  label.append(input,dot,name);row.append(label);root.append(row);
-  input.addEventListener('change',updatePresets);
- });updatePresets();
+// V2.4 : bibliothèque et atelier de création en masse
+const roleKits={
+ staff:{title:'✦ Staff NEBULA',description:'Hiérarchie de direction, modération et animation.',roles:[['✦ Fondateur','#F2C879'],['◆ Administrateur','#E8B66D'],['◈ Responsable de Pôle','#B4A0F8'],['⬡ Modérateur','#75B9FA'],['◇ Helpeur','#80C6E7'],['✧ Animateur','#76DCC9'],['◌ Staff en Formation','#9CA9BC']]},
+ separators:{title:'◆ Séparateurs élégants',description:'Grands groupes visuels à placer dans la liste des membres.',roles:[['✦ ━━━━━ HAUT STAFF ━━━━━ ✦','#F0C878',true],['◆ ━━━━━ STAFF ━━━━━ ◆','#A996F5',true],['✧ ━━━━━ ÉQUIPE CRÉATIVE ━━━━━ ✧','#79D8D0',true],['◇ ━━━━━ VIP ━━━━━ ◇','#E6A5CD',true],['◈ ━━━━━ MEMBRES ━━━━━ ◈','#9DB2C7',true],['◌ ━━━━━ BOTS ━━━━━ ◌','#8495A8',true]]},
+ creative:{title:'✧ Équipe créative',description:'Créateurs, technique et communication.',roles:[['⟡ Développeur','#8AAFFF'],['❖ Graphiste','#F4A4C4'],['✎ Rédacteur','#B2A1E8'],['◉ Community Manager','#76DCC9'],['✺ Organisateur d’Événements','#E0A6EB'],['✧ Monteur vidéo','#C0B1FF']]},
+ community:{title:'◇ Communauté & VIP',description:'Rôles pour les membres actifs et les invités.',roles:[['◇ VIP','#E6A5CD'],['✦ Partenaire','#F0C878'],['✧ Créateur de contenu','#B3A0F6'],['◈ Membre actif','#8BC7EA'],['◌ Nouveau membre','#9DB2C7'],['◆ Booster','#EFA7D8']]},
+ minimal:{title:'◈ Minimaliste',description:'Une hiérarchie courte, sobre et polyvalente.',roles:[['✦ Direction','#F0C878'],['◆ Staff','#A996F5'],['◇ Support','#80C6E7'],['◈ Membre','#9DB2C7']]}
+};
+const kitSel=$('kitTemplate');
+Object.entries(roleKits).forEach(([key,kit])=>kitSel.add(new Option(kit.title,key)));
+const formatKit=kit=>kit.roles.map(r=>r[0]+' | '+r[1]+(r[2]?' | oui':'')).join('\n');
+function renderKitTemplate(){const k=roleKits[kitSel.value];$('kitTemplateDescription').textContent=k.description;$('kitTemplatePreview').textContent=formatKit(k)}
+kitSel.onchange=renderKitTemplate;renderKitTemplate();
+function writeKit(text,append){const ed=$('kitEditor');ed.value=append&&ed.value.trim()?ed.value.trimEnd()+'\n'+text:text;ed.dispatchEvent(new Event('input'));ed.focus()}
+$('kitLoad').onclick=()=>{if($('kitEditor').value.trim()&&!confirm('Remplacer le brouillon actuel par ce modèle ?'))return;writeKit(formatKit(roleKits[kitSel.value]),false)};
+$('kitAppend').onclick=()=>writeKit(formatKit(roleKits[kitSel.value]),true);
+async function copyKit(text){try{await navigator.clipboard.writeText(text);toast('Copié dans le presse-papiers')}catch(e){toast('Copie impossible : sélectionne le texte et utilise Ctrl+C',true)}}
+$('kitCopy').onclick=()=>copyKit(formatKit(roleKits[kitSel.value]));
+$('kitCopyDraft').onclick=()=>copyKit($('kitEditor').value);
+$('kitClear').onclick=()=>{if($('kitEditor').value.trim()&&!confirm('Effacer ton brouillon ?'))return;writeKit('',false)};
+function parseKit(){const roles=[],errors=[],seen=new Set();const lines=$('kitEditor').value.split(/\r?\n/);
+ lines.forEach((raw,index)=>{if(!raw.trim())return;const parts=raw.split('|').map(x=>x.trim());
+ if(parts.length>3){errors.push('Ligne '+(index+1)+' : trop de séparateurs |');return}
+ const [name,colorInput='',hoistInput='']=parts;
+ if(!name||name.length>100){errors.push('Ligne '+(index+1)+' : nom vide ou trop long (100 caractères max)');return}
+ const color=colorInput||'#8EB5D3';if(!/^#[0-9a-fA-F]{6}$/.test(color)){errors.push('Ligne '+(index+1)+' : couleur invalide, utilise #RRGGBB');return}
+ const hoist=['oui','true','1','yes','séparé','separe','hoist'].includes(hoistInput.toLowerCase());
+ if(hoistInput&&!hoist&&!['non','false','0','no'].includes(hoistInput.toLowerCase())){errors.push('Ligne '+(index+1)+' : troisième colonne = oui ou non');return}
+ if(seen.has(name.toLocaleLowerCase())){errors.push('Ligne '+(index+1)+' : rôle en double dans le brouillon');return}
+ seen.add(name.toLocaleLowerCase());roles.push({name,color,hoist});
+ });if(roles.length>15)errors.push('Maximum 15 rôles par création. Sépare ta liste en plusieurs lots.');
+ return {roles,errors};
 }
-function updatePresets(){
- const chosen=[...document.querySelectorAll('.preset-check:checked')].map(c=>presetRoles[Number(c.value)]);
- const existing=new Set(state.roles.map(r=>r.name.toLocaleLowerCase()));
- const newRoles=chosen.filter(p=>!existing.has(p.name.toLocaleLowerCase()));
- $('presetSummary').textContent=chosen.length+' sélectionné(s) · '+newRoles.length+' à créer · '+(chosen.length-newRoles.length)+' déjà existant(s).';
- $('presetCreate').disabled=!newRoles.length;
+function updateKit(){const {roles,errors}=parseKit();const existing=new Set(state.roles.map(r=>r.name.toLocaleLowerCase()));const fresh=roles.filter(r=>!existing.has(r.name.toLocaleLowerCase()));
+ $('kitCount').textContent=roles.length+' / 15 rôles';$('kitErrors').textContent=errors.join('\n');$('kitErrors').style.whiteSpace='pre-wrap';
+ const list=$('kitPreview');list.replaceChildren();roles.forEach(r=>{const row=document.createElement('div');row.className='item';const name=document.createElement('span');name.textContent=r.name;const dot=document.createElement('i');dot.className='preset-color';dot.style.background=r.color;const label=document.createElement('span');label.className='tag';label.textContent=existing.has(r.name.toLocaleLowerCase())?'Déjà présent':(r.hoist?'Séparé · à créer':'À créer');row.append(dot,name,label);list.append(row)});
+ $('kitSummary').textContent=roles.length+' dans le brouillon · '+fresh.length+' à créer · '+(roles.length-fresh.length)+' déjà présent(s)'+(errors.length?' · '+errors.length+' erreur(s)':'');
+ $('kitCreate').disabled=errors.length>0||fresh.length===0;
 }
-$('presetAll').onclick=()=>{document.querySelectorAll('.preset-check').forEach(c=>c.checked=true);updatePresets()};
-$('presetNone').onclick=()=>{document.querySelectorAll('.preset-check').forEach(c=>c.checked=false);updatePresets()};
-$('presetCreate').onclick=()=>execute(async()=>{
- const selected=[...document.querySelectorAll('.preset-check:checked')].map(c=>presetRoles[Number(c.value)]);
- const existing=new Set(state.roles.map(r=>r.name.toLocaleLowerCase()));
- const roles=selected.filter(p=>!existing.has(p.name.toLocaleLowerCase()));
- if(!roles.length)return false;
- if(!confirm('Créer '+roles.length+' rôle(s) Discord sans permissions particulières ?'))return false;
- const result=await api('/api/roles/presets','POST',{roles});
- toast(result.created.length+' rôle(s) créé(s) · '+result.skipped.length+' ignoré(s)');
- await refresh();updatePresets();return false;
+$('kitEditor').addEventListener('input',updateKit);
+$('kitCreate').onclick=()=>execute(async()=>{const {roles,errors}=parseKit();if(errors.length)throw Error(errors.join('\n'));
+ const existing=new Set(state.roles.map(r=>r.name.toLocaleLowerCase()));const newRoles=roles.filter(r=>!existing.has(r.name.toLocaleLowerCase()));if(!newRoles.length)return false;
+ if(!confirm('Créer '+newRoles.length+' rôle(s) Discord, sans permissions particulières ?'))return false;
+ const result=await api('/api/roles/presets','POST',{roles:newRoles});toast(result.created.length+' rôle(s) créé(s) · '+result.skipped.length+' ignoré(s)');await refresh();updateKit();return false;
 });
-renderPresets();
-const commandPages=[['overview','Vue d’ensemble'],['channels','Salons et catégories'],['roles','Gestion des rôles'],['presets','Kits de rôles'],['permissions','Permissions en masse'],['rules','Règlement'],['history','Historique'],['backup','Sauvegarde']];
+updateKit();
+const commandPages=[['overview','Vue d’ensemble'],['channels','Salons et catégories'],['roles','Gestion des rôles'],['presets','Atelier de rôles'],['permissions','Permissions en masse'],['rules','Règlement'],['history','Historique'],['backup','Sauvegarde']];
 let commandIndex=0;
 function updateCommands(){
  const query=$('commandInput').value.trim().toLocaleLowerCase();const results=$('commandResults');results.replaceChildren();
